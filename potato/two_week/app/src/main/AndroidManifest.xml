@@ -12,19 +12,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Two_week"
         tools:targetApi="31">
+        <!-- 🟢 SplashActivity를 시작 화면으로 지정 -->
         <activity
-            android:name=".MainActivity"
+            android:name=".SplashActivity"
             android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Two_week">
+            android:theme="@style/Theme.Splash">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity" />
+        <!-- 메인 액티비티 -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light">
+        </activity>
+
     </application>
 
 </manifest>

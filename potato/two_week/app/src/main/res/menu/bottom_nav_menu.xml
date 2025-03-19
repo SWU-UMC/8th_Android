@@ -8,15 +8,17 @@
         android:id="@+id/nav_shopping"
         android:icon="@drawable/ic_shopping"
         android:title="Shopping" />
-    <item
-        android:id="@+id/nav_list"
-        android:icon="@drawable/ic_list"
-        android:title="List" />
 
     <item
         android:id="@+id/nav_like"
         android:icon="@drawable/ic_like"
         android:title="Like" />
+    <item
+        android:id="@+id/nav_list"
+        android:icon="@drawable/ic_list"
+        android:title="List" />
+
+
 
     <item
         android:id="@+id/nav_mypage"
