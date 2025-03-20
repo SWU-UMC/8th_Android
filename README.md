@@ -59,7 +59,3 @@ git commit -m "docs: README에 Commit Convention 추가"
 #### PR Example
 - 1주차 미션
 - 2주차 미션
-
-#### PR Example
-- 1주차 미션
-- 2주차 미션
