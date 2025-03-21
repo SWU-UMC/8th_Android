@@ -7,13 +7,169 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_back_button"
+        android:layout_marginTop="26dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 제목 -->
+    <TextView
+        android:id="@+id/tv_main_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_main_title"
+        android:textSize="30sp"
+        android:textColor="@android:color/black"
+        android:fontFamily="@font/gangwoneduhyeonokt"
+        android:layout_marginTop="125dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- 부제목 -->
+    <TextView
+        android:id="@+id/tv_main_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_main_subtitle"
+        android:textSize="22sp"
+        android:textColor="@android:color/black"
+        android:fontFamily="@font/gangwoneduhyeonokt"
+        android:layout_marginTop="6dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_main_title" />
+
+    <!-- 설명 -->
+    <TextView
+        android:id="@+id/tv_main_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_main_description"
+        android:textSize="10sp"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_main_subtitle" />
+
+    <ImageView
+        android:id="@+id/iv_main_happy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_main_happy"
+        android:layout_marginTop="35dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_main_description"/>
+
+    <TextView
+        android:id="@+id/tv_main_happy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_main_happy"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:fontFamily="@font/gangwoneduhyeonokt"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_main_happy"/>
+
+    <ImageView
+        android:id="@+id/iv_main_exciting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_main_exciting"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_main_happy"/>
+
+    <TextView
+        android:id="@+id/tv_main_exciting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_main_exciting"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:fontFamily="@font/gangwoneduhyeonokt"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_main_exciting"/>
+
+    <ImageView
+        android:id="@+id/iv_main_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_main_normal"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_main_exciting"/>
+
+    <TextView
+        android:id="@+id/tv_main_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_main_normal"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:fontFamily="@font/gangwoneduhyeonokt"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_main_normal"/>
+
+    <ImageView
+        android:id="@+id/iv_main_anxiety"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_main_anxiety"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_main_normal"/>
+
+    <TextView
+        android:id="@+id/tv_main_anxiety"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_main_anxiety"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:fontFamily="@font/gangwoneduhyeonokt"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_main_anxiety"/>
+
+    <ImageView
+        android:id="@+id/iv_main_upset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_main_upset"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_main_anxiety"/>
+
+    <TextView
+        android:id="@+id/tv_main_upset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_main_upset"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:fontFamily="@font/gangwoneduhyeonokt"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_main_upset"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
