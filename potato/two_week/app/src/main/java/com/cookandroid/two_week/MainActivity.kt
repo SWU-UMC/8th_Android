@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out) // 애니메이션 추가
             .replace(R.id.fragment_container, fragment) // 새로운 Fragment로 교체
             .commit() // 변경 사항 적용
-        //페이드 아웃(fade out) 효과
+        //페이드 아웃(fade out) 효과를 적용함.
 
     }
 }
