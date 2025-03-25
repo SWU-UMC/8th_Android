@@ -1,0 +1,10 @@
+<resources>
+    <style name="Base.Theme.Mission_2" parent="Theme.Material3.DayNight.NoActionBar">
+    </style>
+
+    <style name="Theme.Mission_2" parent="Base.Theme.Mission_2" />
+
+    <style name="SplashTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item> </style>
+</resources>
