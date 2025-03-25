@@ -7,41 +7,41 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.study1.R
+import com.example.study1.R 
+import com.example.myapplicationwe4324.databinding.ActivityMainBinding // 자동 생성된 바인딩 클래스 import
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding // 바인딩 객체 선언
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        //intent를 활용하여 앱 내에서 다른 화면(액티비티)으로 이동하거나 데이터를 전달
-        val imageView = findViewById<ImageView>(R.id.b1)
-        imageView.setOnClickListener {
+        binding = ActivityMainBinding.inflate(layoutInflater) // 바인딩 객체 초기화
+        setContentView(binding.root) // binding.root를 사용하여 레이아웃 설정
+
+        binding.b1.setOnClickListener { // findViewById 대신 binding으로 뷰 접근
             val intent = Intent(this, TargetActivity::class.java)
             startActivity(intent)
         }
-        val imageView2 = findViewById<ImageView>(R.id.b2)
-        imageView2.setOnClickListener {
+        binding.b2.setOnClickListener {
             val intent = Intent(this, TargetActivity::class.java)
             startActivity(intent)
         }
-        val imageView3 = findViewById<ImageView>(R.id.b3)
-        imageView3.setOnClickListener {
+        binding.b3.setOnClickListener {
             val intent = Intent(this, TargetActivity::class.java)
             startActivity(intent)
         }
-        val imageView4 = findViewById<ImageView>(R.id.b4)
-        imageView4.setOnClickListener {
+        binding.b4.setOnClickListener {
             val intent = Intent(this, TargetActivity::class.java)
             startActivity(intent)
         }
-        val imageView5 = findViewById<ImageView>(R.id.b5)
-        imageView5.setOnClickListener {
+        binding.b5.setOnClickListener {
             val intent = Intent(this, TargetActivity::class.java)
             startActivity(intent)
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets -> // findViewById 대신 binding으로 뷰 접근
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -49,9 +49,3 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-class TargetActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_target)
-    }
-}
