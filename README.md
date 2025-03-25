@@ -31,7 +31,7 @@ git push origin <브랜치명>
 
 ### Commit Convention
 
-커밋 메시지는 `타입: 설명`의 형식을 갖추어 작성합니다.
+커밋 메시지는 `타입: n주차 미션 설명`의 형식을 갖추어 작성합니다.
 
 | 타입      | 설명                           |
 |-----------|--------------------------------|
@@ -45,9 +45,8 @@ git push origin <브랜치명>
 
 #### Commit Example
 ```sh
-git commit -m "feat: 로그인 기능 추가"
-git commit -m "fix: API 응답 오류 수정"
-git commit -m "docs: README에 Commit Convention 추가"
+git commit -m "feat: 1주차 미션 화면 전환 기능"
+git commit -m "fix: 5주차 미션 API 응답 오류 수정"
 ```
 
 ### PR Convention
@@ -59,3 +58,4 @@ git commit -m "docs: README에 Commit Convention 추가"
 #### PR Example
 - 1주차 미션
 - 2주차 미션
+- 1, 2주차 미션
