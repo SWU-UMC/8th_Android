@@ -2,28 +2,21 @@ package com.example.week_1
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-
+import com.example.week_1.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding // 뷰 바인딩 객체 선언
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        // 감정 이미지뷰 가져오기
-        val smileImage = findViewById<ImageView>(R.id.smileImage)
-        val excitedImage = findViewById<ImageView>(R.id.excitedImage)
-        val sosoImage = findViewById<ImageView>(R.id.sosoImage)
-        val sadImage = findViewById<ImageView>(R.id.sadImage)
-        val angryImage = findViewById<ImageView>(R.id.angryImage)
-
+        binding = ActivityMainBinding.inflate(layoutInflater) // 바인딩 객체 초기화
+        setContentView(binding.root) // 기존 setContentView 제거 후 바인딩 적용
 
         // 클릭 이벤트 추가
-        smileImage.setOnClickListener {
+        binding.smileImage.setOnClickListener {
             val intent = Intent(this, NextActivity::class.java)
             startActivity(intent)
         }
