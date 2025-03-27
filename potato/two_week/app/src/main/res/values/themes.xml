@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 기존 메인 테마 유지 -->
+    <style name="Theme.Two_week" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:colorPrimary">#6200EE</item> <!-- 기존 색상 유지 -->
+
+        <!-- 여기에 기존 설정 유지 -->
+    </style>
+
+    <!-- ✨ 새로운 스플래시 테마 추가 -->
+    <style name="Theme.Splash" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+</resources>

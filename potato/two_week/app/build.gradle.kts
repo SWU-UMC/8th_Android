@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.cookandroid.one_week"
+    namespace = "com.cookandroid.two_week"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.cookandroid.one_week"
+        applicationId = "com.cookandroid.two_week"
         minSdk = 35
         targetSdk = 35
         versionCode = 1
@@ -36,9 +36,7 @@ android {
     }
     buildFeatures {
         compose = true
-        viewBinding = true
     }
-
 }
 
 dependencies {
@@ -58,5 +56,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
+    implementation("com.google.android.material:material:1.10.0")
+
 }
