@@ -4,19 +4,17 @@ plugins {
 }
 
 android {
-    namespace = "com.example.study1"
+    namespace = "com.example.mission_2"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.study1"
+        applicationId = "com.example.mission_2"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    buildFeatures {
-        viewBinding true
     }
 
     buildTypes {
@@ -35,10 +33,12 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -47,4 +47,5 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
 }
