@@ -2,10 +2,11 @@ package com.example.mission_2
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.mission_2.databinding.ActivitySplashBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SplashActivity1 : AppCompatActivity() {
 
@@ -17,9 +18,10 @@ class SplashActivity1 : AppCompatActivity() {
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(R.layout.activity_splash1)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, SplashActivity2::class.java))
+        lifecycleScope.launch {
+            delay(splashTimeOut)
+            startActivity(Intent(this@SplashActivity1, SplashActivity2::class.java))
             finish()
-        }, splashTimeOut)
+        }
     }
 }

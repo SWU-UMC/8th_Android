@@ -16,7 +16,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater) // 뷰 바인딩 초기화
+        setContentView(binding.root) // 뷰 바인딩의 root를 ContentView로 설정
 
         val bottomNavigationView: BottomNavigationView = binding.bottomNavigationView
         val fragmentContainer: FrameLayout = binding.fragmentContainer
