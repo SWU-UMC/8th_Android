@@ -20,6 +20,7 @@ class HomeTopPanelFragment(val imgRes : Int) : Fragment() {
         binding = FragmentHomeTopPanelBinding.inflate(inflater,container,false)
 
 
+
         //binding.hometodaymusicoverseahs.setImageResource(imgRes)
         return binding.root
     }

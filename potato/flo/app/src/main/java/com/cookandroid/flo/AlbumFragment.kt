@@ -23,7 +23,11 @@ class AlbumFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentAlbumBinding.inflate(inflater,container,false)
+        binding = FragmentAlbumBinding.inflate(inflater, container, false)
+
+        //패널 프래그먼트에서 전달 받은 데이터 가져오기.
+        val albumTitle = arguments?.getString("albumTitle") ?: "앨범 제목 없음"
+        val albumImageResId = arguments?.getInt("albumImageResId") ?: R.drawable.img_album_exp2
 
         binding.albumBackIv.setOnClickListener {
             (context as MainActivity).supportFragmentManager.beginTransaction()
@@ -33,13 +37,13 @@ class AlbumFragment : Fragment() {
 
         val albumAdapter = AlbumVPAdapter(this)
         binding.albumContentVp.adapter = albumAdapter
-        TabLayoutMediator(binding.albumCententTb,binding.albumContentVp){
-            tab, position ->
+        TabLayoutMediator(binding.albumCententTb, binding.albumContentVp) { tab, position ->
             tab.text = information[position]
         }.attach()
 
-            return binding.root
+        return binding.root
     }
+}
 
         /*과제 이어, 혹시 스위치 버튼 선택시... 바뀜!
         binding.albumSwitch.setOnCheckedChangeListener { _: CompoundButton, isChecked: Boolean ->
@@ -90,4 +94,3 @@ class AlbumFragment : Fragment() {
         return binding.root
     }*/
 
-}

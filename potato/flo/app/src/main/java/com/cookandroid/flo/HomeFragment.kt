@@ -45,6 +45,7 @@ class HomeFragment : Fragment() {
         panelAdapter.addFragment(PanelFragment(R.drawable.img_album_exp2))
         panelAdapter.addFragment(PanelFragment(R.drawable.img_album_exp2))
         panelAdapter.addFragment(PanelFragment(R.drawable.img_album_exp2))
+
         binding.homePanelVp.adapter = panelAdapter
         binding.homePanelVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
@@ -80,6 +81,20 @@ class HomeFragment : Fragment() {
 
     private fun startAutoSlide() {
         handler.postDelayed(slideRunnable, 5000)
+    }
+
+    private fun stopAutoSlide() {
+        handler.removeCallbacks(slideRunnable)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startAutoSlide() // 피드백을 바탕으로 추가 수정.
+    }
+
+    override fun onPause() {
+        super.onPause()
+        stopAutoSlide() //피드백을 토대로 수정!
     }
 
     override fun onDestroyView() {

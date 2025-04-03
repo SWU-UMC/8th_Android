@@ -48,9 +48,8 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
-
-    implementation("androidx.viewpager2:viewpager2:1.0.0") //뷰페이저2추가함.
     implementation(libs.androidx.ui.graphics)
+    implementation("androidx.viewpager2:viewpager2:1.0.0") //뷰페이저2추가함.
     implementation("com.google.android.material:material:1.10.0") //하단 네비게이션
     implementation("me.relex:circleindicator:2.1.6'") //신디케이션
     implementation("androidx.constraintlayout:constraintlayout:2.1.4") //콘스트레이트.. 추가
