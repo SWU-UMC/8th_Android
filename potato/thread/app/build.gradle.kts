@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.cookandroid.two_week"
+    namespace = "com.cookandroid.thread"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.cookandroid.two_week"
+        applicationId = "com.cookandroid.thread"
         minSdk = 35
         targetSdk = 35
         versionCode = 1
@@ -36,9 +36,7 @@ android {
     }
     buildFeatures {
         compose = true
-        viewBinding = true  // 뷰 바인딩 활성화
     }
-
 }
 
 dependencies {
@@ -58,8 +56,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
-    implementation("com.google.android.material:material:1.10.0")
-
 }

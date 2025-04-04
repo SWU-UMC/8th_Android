@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.cookandroid.two_week"
+    namespace = "com.cookandroid.flo"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.cookandroid.two_week"
+        applicationId = "com.cookandroid.flo"
         minSdk = 35
         targetSdk = 35
         versionCode = 1
@@ -35,10 +35,10 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
-        compose = true
-        viewBinding = true  // 뷰 바인딩 활성화
+        //compose = true
+        viewBinding = true //뷰바인딩을 사용하기 위한 이유.
+        //findviewbyid보다는 뷰 바인딩이 좋기 때문.
     }
-
 }
 
 dependencies {
@@ -49,8 +49,13 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
+    implementation("androidx.viewpager2:viewpager2:1.0.0") //뷰페이저2추가함.
+    implementation("com.google.android.material:material:1.10.0") //하단 네비게이션
+    implementation("me.relex:circleindicator:2.1.6'") //신디케이션
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4") //콘스트레이트.. 추가
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.circleindicator)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -58,8 +63,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
-    implementation("com.google.android.material:material:1.10.0")
-
 }
