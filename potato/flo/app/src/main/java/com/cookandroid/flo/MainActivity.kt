@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_Flo)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("singer", song.singer)
             intent.putExtra("second", song.second)
             intent.putExtra("playTime", song.playtime)
-            intent.putExtra("isplaying", song.isplaying)
+            intent.putExtra("isplaying", song.isPlaying)
             launcher.launch(intent)
         }
 
