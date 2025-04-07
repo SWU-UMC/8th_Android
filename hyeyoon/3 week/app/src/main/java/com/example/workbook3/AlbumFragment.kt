@@ -20,9 +20,6 @@ class AlbumFragment : Fragment() {
         binding.albumBackIv.setOnClickListener {
             (context as MainActivity).supportFragmentManager.beginTransaction().replace(R.id.main_frm, HomeFragment()).commitAllowingStateLoss()
         }
-        binding.songLalacLayout.setOnClickListener {
-            Toast.makeText(activity,"LILAC",Toast.LENGTH_SHORT).show()
-        }
 
         binding.songMixoffTg.setOnClickListener {
             binding.songMixoffTg.visibility = View.GONE

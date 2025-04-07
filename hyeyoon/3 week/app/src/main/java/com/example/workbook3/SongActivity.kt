@@ -1,5 +1,7 @@
 package com.example.workbook3
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -15,8 +17,13 @@ class SongActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySongBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         binding.songDownIb.setOnClickListener {
-            finish()
+            val intent = Intent(this,MainActivity::class.java).apply {
+                putExtra(MainActivity.STRING_INTENT_KEY, "IU 5th Album 'LILAC'")
+            }
+            setResult(Activity.RESULT_OK,intent)
+            if(!isFinishing) finish()
         }
         binding.songMiniplayerIv.setOnClickListener {
             setPlayerStatus(false)

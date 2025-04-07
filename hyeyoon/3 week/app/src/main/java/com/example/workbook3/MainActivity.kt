@@ -4,7 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -12,6 +14,18 @@ import com.example.workbook3.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
+    companion object {const val STRING_INTENT_KEY = "my_string_key"}
+
+    private val songLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {result ->
+        if (result.resultCode == RESULT_OK) {
+            val returnString = result.data?.getStringExtra(STRING_INTENT_KEY)
+            returnString?.let {
+                Toast.makeText(this, "앨범 제목: $it", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this,SongActivity::class.java)
             intent.putExtra("title", song.title)
             intent.putExtra("singer", song.singer)
-            startActivity(intent)
+            songLauncher.launch(intent)
         }
         initBottomNavigation()
     }
