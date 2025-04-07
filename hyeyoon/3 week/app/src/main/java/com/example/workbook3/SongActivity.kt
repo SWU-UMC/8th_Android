@@ -24,6 +24,23 @@ class SongActivity : AppCompatActivity() {
         binding.songPauseIv.setOnClickListener {
             setPlayerStatus(true)
         }
+
+        binding.songLikeIv.setOnClickListener {
+            binding.songLikeIv.visibility = View.GONE
+            binding.songLikeBackIv.visibility = View.VISIBLE
+        }
+        binding.songLikeBackIv.setOnClickListener {
+            binding.songLikeBackIv.visibility = View.GONE
+            binding.songLikeIv.visibility = View.VISIBLE
+        }
+        binding.songUnlikeIv.setOnClickListener {
+            binding.songUnlikeIv.visibility = View.GONE
+            binding.songUnlikeBackIv.visibility = View.VISIBLE
+        }
+        binding.songUnlikeBackIv.setOnClickListener {
+            binding.songUnlikeBackIv.visibility = View.GONE
+            binding.songUnlikeIv.visibility = View.VISIBLE
+        }
     }
     fun setPlayerStatus(isPlaying : Boolean) {
         if(isPlaying){

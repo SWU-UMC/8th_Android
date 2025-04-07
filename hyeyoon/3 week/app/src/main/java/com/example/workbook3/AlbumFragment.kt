@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.workbook3.databinding.FragmentAlbumBinding
 
 
@@ -19,6 +20,10 @@ class AlbumFragment : Fragment() {
         binding.albumBackIv.setOnClickListener {
             (context as MainActivity).supportFragmentManager.beginTransaction().replace(R.id.main_frm, HomeFragment()).commitAllowingStateLoss()
         }
+        binding.songLalacLayout.setOnClickListener {
+            Toast.makeText(activity,"LILAC",Toast.LENGTH_SHORT).show()
+        }
+
         binding.songMixoffTg.setOnClickListener {
             binding.songMixoffTg.visibility = View.GONE
             binding.songMixonTg.visibility = View.VISIBLE
@@ -27,7 +32,6 @@ class AlbumFragment : Fragment() {
             binding.songMixonTg.visibility = View.GONE
             binding.songMixoffTg.visibility = View.VISIBLE
         }
-
 
         return binding.root
     }
