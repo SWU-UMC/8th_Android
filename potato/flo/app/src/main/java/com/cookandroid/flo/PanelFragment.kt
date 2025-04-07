@@ -46,9 +46,13 @@ class PanelFragment(val imgRes : Int) : Fragment() {
 
             // TextView에서 앨범 제목을 가져와 전달
             val albumTitle = binding.panelAlbumNameTv1.text.toString()
+            // TextView에서 가수 제목을 가져와 전달
+            val singerName = binding.panelSingerNameTv1.text.toString()
+            //panel_singer_name_tv1
 
             activity?.openAlbumFragment(
                 albumTitle = albumTitle,
+                singerName = singerName,
                 albumImageResId = imgRes
             )
         }

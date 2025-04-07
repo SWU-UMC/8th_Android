@@ -50,10 +50,11 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun openAlbumFragment(albumTitle: String, albumImageResId: Int) {
+    fun openAlbumFragment(albumTitle: String,singerName: String, albumImageResId: Int) {
         val albumFragment = AlbumFragment().apply {
             arguments = Bundle().apply {
                 putString("albumTitle", albumTitle)
+                putString("singerName", singerName)
                 putInt("albumImageResId", albumImageResId)
             }
         }
