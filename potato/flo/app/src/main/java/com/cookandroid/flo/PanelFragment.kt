@@ -33,11 +33,23 @@ class PanelFragment(val imgRes : Int) : Fragment() {
 //
 //        }
         //-> 프래그먼트로 바꾸었음.
+//        binding.homeAlbumImgIv1.setOnClickListener {
+//            val activity = requireActivity() as? MainActivity
+//            activity?.openAlbumFragment(
+//                albumTitle = "LILAC",  // 앨범 제목 전달
+//                albumImageResId = imgRes  // 현재 이미지 리소스 전달
+//            )
+//        }
+        // 이미지 클릭 시 앨범 프래그먼트로 이동 + 동적으로 텍스트 전달
         binding.homeAlbumImgIv1.setOnClickListener {
             val activity = requireActivity() as? MainActivity
+
+            // TextView에서 앨범 제목을 가져와 전달
+            val albumTitle = binding.panelAlbumNameTv1.text.toString()
+
             activity?.openAlbumFragment(
-                albumTitle = "LILAC",  // 앨범 제목 전달
-                albumImageResId = imgRes  // 현재 이미지 리소스 전달
+                albumTitle = albumTitle,
+                albumImageResId = imgRes
             )
         }
 
