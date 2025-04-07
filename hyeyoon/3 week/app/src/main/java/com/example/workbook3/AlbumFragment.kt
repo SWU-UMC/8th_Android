@@ -19,6 +19,15 @@ class AlbumFragment : Fragment() {
         binding.albumBackIv.setOnClickListener {
             (context as MainActivity).supportFragmentManager.beginTransaction().replace(R.id.main_frm, HomeFragment()).commitAllowingStateLoss()
         }
+        binding.songMixoffTg.setOnClickListener {
+            binding.songMixoffTg.visibility = View.GONE
+            binding.songMixonTg.visibility = View.VISIBLE
+        }
+        binding.songMixonTg.setOnClickListener {
+            binding.songMixonTg.visibility = View.GONE
+            binding.songMixoffTg.visibility = View.VISIBLE
+        }
+
 
         return binding.root
     }
