@@ -41,6 +41,11 @@ class SongActivity : AppCompatActivity() {
             binding.songUnlikeBackIv.visibility = View.GONE
             binding.songUnlikeIv.visibility = View.VISIBLE
         }
+
+        if(intent.hasExtra("title") && intent.hasExtra("singer")) {
+            binding.songMusicTitleTv.text = intent.getStringExtra("title")
+            binding.songSingerNameTv.text = intent.getStringExtra("singer")
+        }
     }
     fun setPlayerStatus(isPlaying : Boolean) {
         if(isPlaying){
