@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_frm, albumFragment)
-            .addToBackStack(null) // 🔹 뒤로 가기 버튼 누르면 이전 화면으로 돌아가기 가능
+            .addToBackStack(null) // 뒤로 가기 버튼 누르면 이전 화면으로 돌아가기 가능
             .commit()
     }
 
