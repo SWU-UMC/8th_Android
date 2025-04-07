@@ -5,17 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.workbook3.databinding.FragmentLockerBinding
+import com.example.workbook3.databinding.FragmentVideoBinding
 
-
-class LockerFragment : Fragment() {
-    lateinit var binding: FragmentLockerBinding
+class VideoFragment : Fragment() {
+    lateinit var binding : FragmentVideoBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentLockerBinding.inflate(inflater, container, false)
+        binding = FragmentVideoBinding.inflate(inflater,container,false)
         return binding.root
     }
 }

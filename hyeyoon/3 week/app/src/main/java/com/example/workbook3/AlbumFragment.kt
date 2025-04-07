@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.workbook3.databinding.FragmentAlbumBinding
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class AlbumFragment : Fragment() {
+    private val information = arrayListOf("수록곡", "상세정보", "영상")
     lateinit var binding : FragmentAlbumBinding
 
     override fun onCreateView(
@@ -21,15 +23,12 @@ class AlbumFragment : Fragment() {
             (context as MainActivity).supportFragmentManager.beginTransaction().replace(R.id.main_frm, HomeFragment()).commitAllowingStateLoss()
         }
 
-        binding.songMixoffTg.setOnClickListener {
-            binding.songMixoffTg.visibility = View.GONE
-            binding.songMixonTg.visibility = View.VISIBLE
-        }
-        binding.songMixonTg.setOnClickListener {
-            binding.songMixonTg.visibility = View.GONE
-            binding.songMixoffTg.visibility = View.VISIBLE
-        }
-
+        val albumAdapter = AlbumVpAdapter(this)
+        binding.albumContentVp.adapter = albumAdapter
+        TabLayoutMediator(binding.albumContentTb, binding.albumContentVp){
+            tab, position ->
+            tab.text = information[position]
+        }.attach()
         return binding.root
     }
 }
