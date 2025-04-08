@@ -50,17 +50,19 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun openAlbumFragment(albumTitle: String, albumImageResId: Int) {
+    fun openAlbumFragment(albumTitle: String,singerName: String, albumImageResId: Int) {
         val albumFragment = AlbumFragment().apply {
             arguments = Bundle().apply {
                 putString("albumTitle", albumTitle)
+                putString("singerName", singerName)
                 putInt("albumImageResId", albumImageResId)
             }
         }
 
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_frm, albumFragment)
-            .addToBackStack(null) // 🔹 뒤로 가기 버튼 누르면 이전 화면으로 돌아가기 가능
+            .addToBackStack(null) //
+            // 뒤로 가기 버튼 누르면 이전 화면으로 돌아가기 가능
             .commit()
     }
 
