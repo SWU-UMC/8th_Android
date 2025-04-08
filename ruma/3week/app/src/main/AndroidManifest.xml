@@ -9,9 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FLO">
+
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/splashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,8 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SongActivity"
-            android:exported="true"/>
+            android:name="com.example.a3week.SongActivity"/>
 
     </application>
 
