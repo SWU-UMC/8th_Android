@@ -10,6 +10,7 @@ import com.example.a3week.databinding.FragmentBannerBinding
 class BannerFragment(val imgRes : Int) : Fragment() {
     lateinit var binding : FragmentBannerBinding
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

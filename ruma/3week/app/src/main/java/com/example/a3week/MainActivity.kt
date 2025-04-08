@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
             val intent=Intent(this,SongActivity::class.java)
             intent.putExtra("title", song.title)
             intent.putExtra("singer", song.singer)
+            intent.putExtra("isPlaying", true)
             startActivity(intent)
         }
         initBottomNavigation()
