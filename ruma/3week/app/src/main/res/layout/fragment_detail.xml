@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/albumTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="앨범명: IU 5th Album 'LILAC'"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/artistName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="아티스트: 아이유 (IU)"
+            android:textSize="16sp"
+            android:textColor="#333333"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/distributor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="유통사: 카카오엔터테인먼트"
+            android:textSize="14sp"
+            android:textColor="#555555"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/agency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="기획사: EDAM엔터테인먼트"
+            android:textSize="14sp"
+            android:textColor="#555555"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/albumDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:text="
+앨범소개:
+‘아이유(IU)’ 정규 5집 [LILAC]
+
+“안녕 꽃잎 같은 안녕”
+“내 맘에 아무 의문이 없어 난 이 다음으로 가요”
+
+20대의 마지막을 화려한 ‘인사’로 예고했던 아이유가 봄 내음과 함께 다섯 번째 정규앨범 [LILAC]으로 돌아왔다.
+4년 만에 선보이는 정규앨범 [LILAC]은 스무 살의 솔직하고 풋풋한 감성을 담아 표현했던 첫 앨범과 달리,
+지금껏 지나온 20대를 10개의 트랙에 다채로운 시각으로 풀어내 그동안의 성숙해진 감성을 오롯이 담았다.
+
+이번에도 역시 프로듀싱은 물론 작곡 및 전곡 작사에 참여한 아이유는 국내외 다양한 특급 아티스트들과 새로운 협업을 통해
+장르에 대한 시도와 완성도 높은 곡들을 선보여 현재 진행형인 아이유의 음악적 진화가 향후 새롭게 맞이할
+30대에는 또 어떠한 모습일지 기대하게 만든다."
+            />
+    </LinearLayout>
+</ScrollView>
