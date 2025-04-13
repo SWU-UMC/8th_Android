@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)  // 뷰 설정
 
         // BottomNavigationView 설정
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        val bottomNavigationView = binding.bottomNavigationView
 
         if(savedInstanceState==null){
             replaceFragment(HomeFragment())
