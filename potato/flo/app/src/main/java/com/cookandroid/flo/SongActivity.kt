@@ -89,7 +89,7 @@ class SongActivity : AppCompatActivity() {
         //editor.putString("title", song.title) //song 정보를.. 다.. 하기 번거로워! json으로 데이터를 전송할 것이다!
         //자바 객체를 -> json => Gson! -> SharedPreference에 넣을 것이다
         val songJson = gson.toJson(song) //쥐슨이 json 포멧으로 변환
-        editor.putString("song", songJson)
+        editor.putString("songData", songJson)
 
         editor.apply() //실제 저장작업 완료! 꼭 있어야 해(커밋, 푸쉬랑 비슷한 개념)
         
