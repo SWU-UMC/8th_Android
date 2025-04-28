@@ -11,8 +11,8 @@
         android:id="@+id/main_frm"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/main_player_cl"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/main_player_cl"/>
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -92,8 +92,6 @@
 
 
         </LinearLayout>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -101,7 +99,7 @@
         android:id="@+id/main_bnv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:itemIconSize="20dp"
+        app:itemIconSize="25dp"
         app:itemIconTint="@drawable/btm_color_selector"
         app:itemTextColor="@drawable/btm_color_selector"
         app:labelVisibilityMode="labeled"
