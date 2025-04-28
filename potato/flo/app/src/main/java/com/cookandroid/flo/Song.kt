@@ -7,5 +7,8 @@ data class Song(
     val singer : String = "",
     val second : Int = 0,
     val playtime : Int = 0,
-    var isPlaying : Boolean = false
+    var isPlaying : Boolean = false,
+    //어떤 음악이 재생되는지를 알려줌
+    var music: String = ""
+
 )

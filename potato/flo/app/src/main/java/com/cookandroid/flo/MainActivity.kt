@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         val song = Song(
             binding.mainMiniplayerTitleTv.text.toString(),
-            binding.mainMiniplayerSingerTv.text.toString(),0,60,false)
+            binding.mainMiniplayerSingerTv.text.toString(),0,60,false, "music_lilac")  //음악 정보 담음.
 
 
         binding.mainPlayerCl.setOnClickListener {
@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("second", song.second)
             intent.putExtra("playTime", song.playtime)
             intent.putExtra("isplaying", song.isPlaying)
+            intent.putExtra("music",song.music) //5주차 음악 정보 추가
             launcher.launch(intent)
         }
 
@@ -68,7 +69,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun initBottomNavigation() {
-        // 앱 실행 시 첫 화면을 HomeFragment로 설정(강의하고는 상반되는 내요!)
+
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_frm, HomeFragment())
             .commitAllowingStateLoss()

@@ -3,6 +3,7 @@ package com.cookandroid.flo
 
 //var = 변경 가능, val = 변경 불가
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -18,6 +19,9 @@ class SongActivity : AppCompatActivity() {
     lateinit var binding : ActivitySongBinding
     lateinit var song : Song
     lateinit var timer : Timer
+
+    //미디어 플레이어를 이용. 음악을 재생
+    private var mediaPlayer : MediaPlayer? = null //음악 값이 널일 수 있기 때문.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +86,7 @@ class SongActivity : AppCompatActivity() {
                 intent.getIntExtra("second", 0),
                 intent.getIntExtra("playTime", 0),
                 intent.getBooleanExtra("isplaying", false),
-
+                intent.getStringExtra("music")!! //음악 정보 주고 받는...
 
             )
         }
@@ -100,6 +104,8 @@ class SongActivity : AppCompatActivity() {
         binding.songStartTimeTv.text = String.format("%02d:%02d",song.second/60, song.second %60)
         binding.songEndTimeTv.text = String.format("%02d:%02d",song.playtime/60, song.playtime %60)
         binding.songProgressbarSb.progress = (song.second * 1000 / song.playtime)
+        val music = resources.getIdentifier(song.music, "raw", this.packageName) //뮤직 리소스 받아옴.
+        mediaPlayer = MediaPlayer.create(this,music) //이 음악을 재생할거야!
 
         setPlayerStatus(song.isPlaying)
 
@@ -121,11 +127,15 @@ class SongActivity : AppCompatActivity() {
 //        }
 
         if (isPlaying) {
-            binding.songMiniplayerIv.visibility = View.GONE  // ▶️ 재생 버튼 숨김
-            binding.songPauseIv.visibility = View.VISIBLE   // ⏸ 멈춤 버튼 표시
+            binding.songMiniplayerIv.visibility = View.GONE  // ▶재생 버튼 숨김
+            binding.songPauseIv.visibility = View.VISIBLE   // ⏸멈춤 버튼 표시
+            mediaPlayer?.start()
         } else {
-            binding.songMiniplayerIv.visibility = View.VISIBLE  // ▶️ 재생 버튼 표시
-            binding.songPauseIv.visibility = View.GONE         // ⏸ 멈춤 버튼 숨김
+            binding.songMiniplayerIv.visibility = View.VISIBLE  // ▶재생 버튼 표시
+            binding.songPauseIv.visibility = View.GONE         // ⏸멈춤 버튼 숨김
+            if(mediaPlayer?.isPlaying == true){
+                mediaPlayer?.pause() //미디어 플에이어는 재생아닐때 멈춤을 하면 오류가 발생해서 이와 같은 if문을 사용함.
+            }
         }
     }
 
