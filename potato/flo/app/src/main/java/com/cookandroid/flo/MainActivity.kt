@@ -7,11 +7,15 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.cookandroid.flo.databinding.ActivityMainBinding
+import com.google.gson.Gson
 
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
+
+    private var song : Song = Song()
+    private var gson : Gson = Gson()
 
     //registerForActivityResult 이용해서, songActivity에서 토스트 띄우기를 위한... 코드!(송 액티비티로 부터, 제목 - 가수 정보를 받아옴.)
     private val launcher =
@@ -33,10 +37,10 @@ class MainActivity : AppCompatActivity() {
 
         initBottomNavigation()
 
-        val song = Song(
-            binding.mainMiniplayerTitleTv.text.toString(),
-            binding.mainMiniplayerSingerTv.text.toString(),0,60,false, "music_lilac")  //음악 정보 담음.
-
+        //val song = Song(
+          //  binding.mainMiniplayerTitleTv.text.toString(),
+           // binding.mainMiniplayerSingerTv.text.toString(),0,60,false, "music_lilac")  //음악 정보 담음.
+            //5주차 수업 때, SongActivity에서 값을 가져오는 코드를 구현했기에 필요 없음
 
         binding.mainPlayerCl.setOnClickListener {
             val intent = Intent(this, SongActivity::class.java)
@@ -106,6 +110,33 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
+
+
+    }
+    //미니 플레이어에 반영하는 함수!
+    private fun setMiniPlayer(song : Song){
+        binding.mainMiniplayerTitleTv.text = song.title
+        binding.mainMiniplayerSingerTv.text = song.singer
+        binding.mainProgressSb.progress = (song.second*100000)/song.playtime //시크바 최대 10만
+
+    }
+
+
+    //액티비티 전환할 때 부터, onStart() 시작되는 것이기에! SongActivity내용을 받아올 것이기에!
+    override fun onStart(){
+        super.onStart()
+        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE) //데이터를 가지고 있는 이름! 
+        val songJson = sharedPreferences.getString("songData", null) //진짜 데이터 가져오기
+
+        //가져온 데이터를 송 객체에
+
+        song = if(songJson == null) { //데이터 값이 없을 때 오류가 나지 않도록!
+            Song("라일락", "아이유(IU)", 0 , 60,false, "music_lilac")
+        } else{
+            gson.fromJson(songJson, song::class.java)
+        }
+
+        setMiniPlayer(song)
 
 
     }
