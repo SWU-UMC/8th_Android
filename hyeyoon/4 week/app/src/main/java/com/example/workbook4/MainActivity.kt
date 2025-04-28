@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         initBottomNavigation()
 
-        val song = Song(binding.mainMiniplayerTitleTv.text.toString(), binding.mainMiniplayerSingerTv.text.toString(), 0, 60, false)
+        val song = Song(binding.mainMiniplayerTitleTv.text.toString(), binding.mainMiniplayerSingerTv.text.toString(), 0, 60, false, "lilac_iu")
 
         binding.mainPlayerCl.setOnClickListener {
             val intent = Intent(this,SongActivity::class.java)
@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("second", song.second)
             intent.putExtra("playTime", song.playTie)
             intent.putExtra("isPlaying", song.isPlaying)
+            intent.putExtra("music", song.music)
             songLauncher.launch(intent)
         }
     }
