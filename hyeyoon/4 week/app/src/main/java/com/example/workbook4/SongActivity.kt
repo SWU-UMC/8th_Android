@@ -132,10 +132,16 @@ class SongActivity : AppCompatActivity() {
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        setPlayerStatus(false) // 포커스 잃으면 음악 중지
+    }
 
     override fun onDestroy() {
         super.onDestroy()
         timer.interrupt()
+        mediaPlayer?.release() // 미디어 플레이어가 갖고 있던 리소스 해제
+        mediaPlayer = null // 미디어 플레이어 해제
     }
 
 }
