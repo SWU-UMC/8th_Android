@@ -11,12 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.workbook4.databinding.ActivitySongBinding
+import com.google.gson.Gson
 
 class SongActivity : AppCompatActivity() {
     lateinit var binding: ActivitySongBinding
     lateinit var song : Song
     lateinit var timer : Timer
     private var mediaPlayer: MediaPlayer? = null
+    private var gson: Gson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,13 +143,18 @@ class SongActivity : AppCompatActivity() {
         mediaPlayer?.start()
 
         timer.interrupt() // 기존 타이머 중지
-
         startTimer() // Timer 다시 새로 만들어서 실행
     }
 
     override fun onPause() {
         super.onPause()
         setPlayerStatus(false) // 포커스 잃으면 음악 중지
+        song.second = ((binding.songProgressSb.progress * song.playTie)/100)/1000 // 음악 재생 기억
+        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE) // 데이터 저장
+        val editor = sharedPreferences.edit() // 에디터 추가
+        val songJson = gson.toJson(song) // song 객체 Json 포맷으로 변경
+        editor.putString("song", songJson)
+        editor.apply() // apply해야 저장 공간에 저장됨
     }
 
     override fun onDestroy() {
