@@ -9,10 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.workbook4.databinding.ActivityMainBinding
+import com.google.gson.Gson
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     companion object {const val STRING_INTENT_KEY = "my_string_key"}
+    private var song:Song = Song()
+    private var gson: Gson = Gson()
 
     private val songLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -31,8 +34,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initBottomNavigation()
-
-        val song = Song(binding.mainMiniplayerTitleTv.text.toString(), binding.mainMiniplayerSingerTv.text.toString(), 0, 60, false, "lilac_iu")
 
         binding.mainPlayerCl.setOnClickListener {
             val intent = Intent(this,SongActivity::class.java)
@@ -83,5 +84,25 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
+
+    }
+
+    private fun setMiniPlayer(song: Song){
+        binding.mainMiniplayerTitleTv.text = song.title
+        binding.mainMiniplayerSingerTv.text = song.singer
+        binding.mainProgressSb.progress = (song.second * 100)/song.playTie
+    }
+    override fun onStart() {
+        super.onStart() // 액티비티 전환될 때 onStart부터 시작
+        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE) // SharedPreference에 저장된 이름 가져옴
+        val songJson = sharedPreferences.getString("songData", null) // 저장된 데이터 가져옴
+
+        song = if(songJson == null) { // songJson이 null일 때 데이터를 직접 지정
+            Song("라일락", "아이유(IU)", 0, 60, false, "lilac_iu")
+        } else {
+            gson.fromJson(songJson, Song::class.java) //songJson을 java 객체로 전환
+        }
+
+        setMiniPlayer(song) // miniplayer에 song 데이터 실제로 반영
     }
 }
