@@ -97,7 +97,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
 
-        <androidx.viewpager2.widget.ViewPager2
+        <ImageView
             android:id="@+id/home_pannel_album_img_01_vp"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -132,7 +132,7 @@
             app:layout_constraintTop_toBottomOf="@id/home_pannel_album_title_01_tv" />
 
 
-        <androidx.viewpager2.widget.ViewPager2
+        <ImageView
             android:id="@+id/home_pannel_album_img_02_vp"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -253,7 +253,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
-                        <androidx.viewpager2.widget.ViewPager2
+                        <ImageView
                             android:id="@+id/home_album_img_vp1"
                             android:layout_width="150dp"
                             android:layout_height="150dp"
@@ -301,7 +301,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:orientation="vertical">
-                    <androidx.viewpager2.widget.ViewPager2
+                    <ImageView
                         android:layout_width="150dp"
                         android:layout_height="150dp"
                         android:scaleType="fitCenter"
@@ -332,7 +332,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:orientation="vertical">
-                    <androidx.viewpager2.widget.ViewPager2
+                    <ImageView
                         android:layout_width="150dp"
                         android:layout_height="150dp"
                         android:scaleType="fitCenter"
@@ -425,7 +425,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp">
 
-                    <androidx.viewpager2.widget.ViewPager2
+                    <ImageView
                         android:id="@+id/home_daily_music_album_img_01_vp"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
@@ -435,7 +435,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <androidx.viewpager2.widget.ViewPager2
+                    <ImageView
                         android:id="@+id/home_daily_music_album_img_play_01_vp"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
@@ -474,7 +474,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp">
 
-                    <androidx.viewpager2.widget.ViewPager2
+                    <ImageView
                         android:id="@+id/home_daily_music_album_img_02_vp"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
@@ -484,7 +484,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <androidx.viewpager2.widget.ViewPager2
+                    <ImageView
                         android:id="@+id/home_daily_music_album_img_play_02_vp"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
@@ -523,7 +523,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp">
 
-                    <androidx.viewpager2.widget.ViewPager2
+                    <ImageView
                         android:id="@+id/home_daily_music_album_img_03_vp"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
@@ -533,7 +533,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <androidx.viewpager2.widget.ViewPager2
+                    <ImageView
                         android:id="@+id/home_daily_music_album_img_play_03_vp"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
@@ -607,7 +607,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp">
 
-                    <androidx.viewpager2.widget.ViewPager2
+                    <ImageView
                         android:id="@+id/home_video_music_album_img_01_vp"
                         android:layout_width="304dp"
                         android:layout_height="171dp"
@@ -646,7 +646,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp">
 
-                    <androidx.viewpager2.widget.ViewPager2
+                    <ImageView
                         android:id="@+id/home_video_music_album_img_02_vp"
                         android:layout_width="304dp"
                         android:layout_height="171dp"
@@ -685,7 +685,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp">
 
-                    <androidx.viewpager2.widget.ViewPager2
+                    <ImageView
                         android:id="@+id/home_video_music_album_img_03_vp"
                         android:layout_width="304dp"
                         android:layout_height="171dp"
