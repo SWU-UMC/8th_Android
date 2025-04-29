@@ -36,6 +36,11 @@ class SongActivity : AppCompatActivity() {
         binding.songPauseIv.setOnClickListener {
             setPlayerStatus(false)
         }
+        binding.songRepeatIv.setOnClickListener {
+            mediaPlayer?.seekTo(0)
+            timer.restartTimer() // Timer 재시작
+            setPlayerStatus(true) // 재생 상태로 변경 (필요한 경우)
+        }
 
 
     }
@@ -73,6 +78,7 @@ class SongActivity : AppCompatActivity() {
         }
         startTimer()
     }
+
 
     private fun setPlayer(song: Song){
         binding.songMusicTitleTv.text = intent.getStringExtra("title")!!
@@ -115,36 +121,44 @@ class SongActivity : AppCompatActivity() {
 
         private var second : Int = 0
         private var mills: Float = 0f
+        @Volatile
+        private  var isRunning=false;
+
+        fun restartTimer() {
+            if (!isRunning) { // 스레드가 실행 중이 아니면 새로 시작
+                isRunning = true
+                second = 0
+                mills = 0f
+                start()
+            } else { // 스레드가 실행 중이면 상태만 초기화
+                second = 0
+                mills = 0f
+            }
+            isPlaying = true // 재시작 시 재생 상태로 설정
+        }
 
         override fun run() {
-            super.run()
             try {
-                while (true){
-
-                    if (second >= playTime){
-                        break
-                    }
-
-                    if (isPlaying){
+                isRunning = true // 스레드 시작 시 실행 상태를 true로 설정
+                while (isRunning && second <= playTime) { // isRunning 상태를 체크
+                    if (isPlaying) {
                         sleep(50)
                         mills += 50
 
                         runOnUiThread {
-                            binding.songProgressSb.progress = ((mills / playTime)*100).toInt()
+                            binding.songProgressSb.progress = ((mills / playTime) * 100).toInt()
+                            binding.songStartTimeTv.text = String.format("%02d:%02d", second / 60, second % 60)
                         }
 
-                        if (mills % 1000 == 0f){
-                            runOnUiThread {
-                                binding.songStartTimeTv.text = String.format("%02d:%02d",second / 60, second % 60)
-                            }
+                        if (mills % 1000 == 0f) {
                             second++
                         }
-
+                    } else {
+                        sleep(100) // 일시 정지 상태
                     }
-
                 }
-
-            }catch (e: InterruptedException){
+                isRunning = false // 스레드 종료 시 실행 상태를 false로 설정
+                }catch (e: InterruptedException){
                 Log.d("Song","쓰레드가 죽었습니다. ${e.message}")
             }
 
