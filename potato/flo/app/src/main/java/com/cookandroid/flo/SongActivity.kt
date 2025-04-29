@@ -72,7 +72,10 @@ class SongActivity : AppCompatActivity() {
         /*if(intent.hasExtra("title") && intent.hasExtra("singer"))
             binding.songMusicTitleTv.text=intent.getStringExtra("title") //텍스트 뷰에서 텍스트를 바꿔줄건데..
             binding.songSingerNameTv.text=intent.getStringExtra("singer")*/
-
+        //1곡 재생 버튼!
+        binding.songRepeatIv.setOnClickListener {
+            restartSong()
+        }
 
     }
     //사용자가 포커스를 잃으면 음악 중지!
@@ -120,6 +123,16 @@ class SongActivity : AppCompatActivity() {
         }
 
         startTimer()
+    }
+
+    private fun restartSong() {
+        timer.interrupt() // 현재 타이머 중지
+        mediaPlayer?.seekTo(0) // 음악 다시 처음으로 돌아가야지!
+        mediaPlayer?.start() // 음악 다시 재생
+
+        song.second = 0 // 시작시간 기화
+        setPlayerStatus(true)
+        startTimer() // 새로운 타이머 다시 시작
     }
 
     private fun setPlayer(song: Song){
