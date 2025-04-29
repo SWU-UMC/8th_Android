@@ -38,6 +38,10 @@ class SongActivity : AppCompatActivity() {
         binding.songPauseIv.setOnClickListener {
             setPlayerStatus(false)
         }
+
+        binding.songRepeatIv.setOnClickListener {
+            restartSong()
+        }
     }
 
     private fun initSong(){
@@ -130,6 +134,15 @@ class SongActivity : AppCompatActivity() {
 
         }
 
+    }
+
+    private fun restartSong() {
+        mediaPlayer?.seekTo(0) // 기존 재생 멈추고 처음으로 이동
+        mediaPlayer?.start()
+
+        timer.interrupt() // 기존 타이머 중지
+
+        startTimer() // Timer 다시 새로 만들어서 실행
     }
 
     override fun onPause() {
