@@ -2,6 +2,7 @@ package com.example.workbook4
 
 import android.app.Activity
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,11 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.workbook4.databinding.ActivitySongBinding
+import com.google.gson.Gson
 
 class SongActivity : AppCompatActivity() {
     lateinit var binding: ActivitySongBinding
     lateinit var song : Song
     lateinit var timer : Timer
+    private var mediaPlayer: MediaPlayer? = null
+    private var gson: Gson = Gson()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,11 +40,10 @@ class SongActivity : AppCompatActivity() {
         binding.songPauseIv.setOnClickListener {
             setPlayerStatus(false)
         }
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        timer.interrupt()
+        binding.songRepeatIv.setOnClickListener {
+            restartSong()
+        }
     }
 
     private fun initSong(){
@@ -50,7 +53,8 @@ class SongActivity : AppCompatActivity() {
                 intent.getStringExtra("singer")!!,
                 intent.getIntExtra("second",0),
                 intent.getIntExtra("playTime",0),
-                intent.getBooleanExtra("isPlaying",false)
+                intent.getBooleanExtra("isPlaying",false),
+                intent.getStringExtra("music")!!
             )
         }
         startTimer()
@@ -62,6 +66,8 @@ class SongActivity : AppCompatActivity() {
         binding.songStartTimeTv.text = String.format("%02d:%02d",song.second / 60, song.second % 60)
         binding.songEndTimeTv.text = String.format("%02d:%02d",song.playTie / 60, song.playTie % 60)
         binding.songProgressSb.progress = (song.second * 1000 / song.playTie)
+        val music = resources.getIdentifier(song.music, "raw", this.packageName)
+        mediaPlayer = MediaPlayer.create(this, music)
 
         setPlayerStatus(song.isPlaying)
 
@@ -75,11 +81,14 @@ class SongActivity : AppCompatActivity() {
         if(isPlaying){
             binding.songMiniplayerIv.visibility = View.GONE
             binding.songPauseIv.visibility = View.VISIBLE
+            mediaPlayer?.start() // 음악 재생
         } else {
             binding.songMiniplayerIv.visibility = View.VISIBLE
             binding.songPauseIv.visibility = View.GONE
+            if(mediaPlayer?.isPlaying == true) {
+                mediaPlayer?.pause() // 음악 재생 중 정지
+            }
         }
-
     }
 
     private fun startTimer(){
@@ -126,5 +135,33 @@ class SongActivity : AppCompatActivity() {
 
 
         }
+
     }
+
+    private fun restartSong() {
+        mediaPlayer?.seekTo(0) // 기존 재생 멈추고 처음으로 이동
+        mediaPlayer?.start()
+
+        timer.interrupt() // 기존 타이머 중지
+        startTimer() // Timer 다시 새로 만들어서 실행
+    }
+
+    override fun onPause() {
+        super.onPause()
+        setPlayerStatus(false) // 포커스 잃으면 음악 중지
+        song.second = ((binding.songProgressSb.progress * song.playTie)/100)/1000 // 음악 재생 기억
+        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE) // 데이터 저장
+        val editor = sharedPreferences.edit() // 에디터 추가
+        val songJson = gson.toJson(song) // song 객체 Json 포맷으로 변경
+        editor.putString("songData", songJson)
+        editor.apply() // apply해야 저장 공간에 저장됨
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        timer.interrupt()
+        mediaPlayer?.release() // 미디어 플레이어가 갖고 있던 리소스 해제
+        mediaPlayer = null // 미디어 플레이어 해제
+    }
+
 }

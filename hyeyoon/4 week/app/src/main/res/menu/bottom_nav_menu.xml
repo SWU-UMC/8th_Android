@@ -24,5 +24,4 @@
         android:icon="@drawable/ic_bottom_locker_no_select"
         app:showAsAction="always"
         android:title="보관함" />
-
 </menu>
