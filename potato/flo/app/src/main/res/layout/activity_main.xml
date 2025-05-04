@@ -25,7 +25,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
+        <SeekBar
+            android:id="@+id/mainProgressSb"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:max="100000"
+            android:progress="0"
+            android:progressTint="@color/black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/mainMiniPlayerInfoLl"
+            />
+
+
         <LinearLayout
+            android:id="@+id/mainMiniPlayerInfoLl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"

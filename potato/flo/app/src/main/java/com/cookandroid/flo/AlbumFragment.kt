@@ -27,6 +27,7 @@ class AlbumFragment : Fragment() {
 
         //패널 프래그먼트에서 전달 받은 데이터 가져오기.
         val albumTitle = arguments?.getString("albumTitle") ?: "앨범 제목 없음"
+        val singerName = arguments?.getString("singerName") ?: "가수 이름 없음"
         val albumImageResId = arguments?.getInt("albumImageResId") ?: R.drawable.img_album_exp2
 
         binding.albumBackIv.setOnClickListener {

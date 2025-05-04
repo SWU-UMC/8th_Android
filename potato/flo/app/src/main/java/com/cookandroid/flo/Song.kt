@@ -3,9 +3,12 @@ package com.cookandroid.flo
 //제목, 가수, 사진,재생시간,현재 재생시간, isplaying(재생 되고 있는지)
 
 data class Song(
-    val title : String = "",
-    val singer : String = "",
-    val second : Int = 0,
-    val playtime : Int = 0,
-    var isPlaying : Boolean = false
+    var title : String = "",
+    var singer : String = "",
+    var second : Int = 0,
+    var playtime : Int = 0,
+    var isPlaying : Boolean = false,
+    //어떤 음악이 재생되는지를 알려줌
+    var music: String = ""
+
 )

@@ -49,6 +49,7 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
+    implementation("com.google.code.gson:gson:2.10.1") //Gson 추가
     implementation("androidx.viewpager2:viewpager2:1.0.0") //뷰페이저2추가함.
     implementation("com.google.android.material:material:1.10.0") //하단 네비게이션
     implementation("me.relex:circleindicator:2.1.6'") //신디케이션
