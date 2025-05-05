@@ -59,4 +59,4 @@
         app:layout_constraintTop_toBottomOf="@id/item_album_title_tv"
         app:layout_constraintStart_toStartOf="@id/item_album_title_tv" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout> <!-- -->
