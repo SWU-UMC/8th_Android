@@ -17,6 +17,7 @@ import me.relex.circleindicator.CircleIndicator3
 class HomeFragment : Fragment() {
 
     lateinit var binding: FragmentHomeBinding
+    private var albumDates = ArrayList<Album>()
 
     private val handler = Handler(Looper.getMainLooper()) // 🔹 핸들러 추가
 
@@ -35,19 +36,29 @@ class HomeFragment : Fragment() {
 //                .commitAllowingStateLoss()
 //        }
 
+        albumDates.apply {
+            add(Album("Butter", "방탄소년단(BTS)", R.drawable.img_album_exp))
+            add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
+            add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
+            add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
+            add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
+            add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
+        }
+
+
         val bannerAdapter = BannerVPAdapter(this)
         bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp))
         bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp2))
         binding.homeBannerVp.adapter = bannerAdapter
         binding.homeBannerVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
-        val panelAdapter = PanelVPAdapter(this)
-        panelAdapter.addFragment(PanelFragment(R.drawable.img_album_exp2))
-        panelAdapter.addFragment(PanelFragment(R.drawable.img_album_exp2))
-        panelAdapter.addFragment(PanelFragment(R.drawable.img_album_exp2))
-
-        binding.homePanelVp.adapter = panelAdapter
-        binding.homePanelVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+//        val panelAdapter = PanelVPAdapter(this)
+//        panelAdapter.addFragment(PanelFragment(R.drawable.img_album_exp2))
+//        panelAdapter.addFragment(PanelFragment(R.drawable.img_album_exp2))
+//        panelAdapter.addFragment(PanelFragment(R.drawable.img_album_exp2))
+//
+//        binding.homePanelVp.adapter = panelAdapter
+//        binding.homePanelVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
 
         val panelTopAdapter = TopPanelVpAdapter(this)

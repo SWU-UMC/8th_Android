@@ -1,0 +1,35 @@
+package com.cookandroid.flo
+
+import android.view.LayoutInflater
+import androidx.recyclerview.widget.RecyclerView
+import android.view.ViewGroup
+import com.cookandroid.flo.databinding.ItemAlbumBinding
+
+class AlbumRVAdapter(private val albumList: ArrayList<Album>) : RecyclerView.Adapter<AlbumRVAdapter.ViewHolder>() {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): AlbumRVAdapter.ViewHolder {
+       //뷰 홀더를 생성해줌. 호출되는 함수.
+        val binding: ItemAlbumBinding = ItemAlbumBinding.inflate(LayoutInflater.from(viewGroup.context),viewGroup,false)
+        return ViewHolder(binding)
+        //사용하는 아이템 객체를 만드는 것이 중요!
+    }
+
+    override fun onBindViewHolder(holder: AlbumRVAdapter.ViewHolder, position: Int) {
+        //매번 리스트를 받아옴?
+        holder.bind(albumList[position])
+    }
+
+    override fun getItemCount(): Int = albumList.size
+        //데이터 세트 크기를 알려줌.
+
+
+    inner class ViewHolder(val binding: ItemAlbumBinding) :  RecyclerView.ViewHolder(binding.root){
+
+        fun bind(album: Album){
+            binding.itemAlbumTitleTv.text = album.title
+            binding.itemAlbumSingerTv.text = album.singer
+            binding.itemAlbumCoverImgIv.setImageResource(album.coverImg!!)
+        }
+
+    }
+
+}
