@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.cookandroid.flo.databinding.FragmentHomeBinding
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.gson.Gson
 import me.relex.circleindicator.CircleIndicator3
 
 
@@ -30,6 +31,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+
 
 //        binding.homeAlbumImgIv1.setOnClickListener {
 //            (context as MainActivity).supportFragmentManager.beginTransaction()
@@ -51,6 +53,22 @@ class HomeFragment : Fragment() {
         binding.homeTodayAlbumRv.adapter = albumRVAdapter
         binding.homeTodayAlbumRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
+        albumRVAdapter.setMyItemClickListener(object : AlbumRVAdapter.MyItemClickListener{
+
+            override fun onItemClick(album: Album) {
+                (context as MainActivity).supportFragmentManager.beginTransaction()
+                    .replace(R.id.main_frm ,  AlbumFragment().apply{
+                        arguments = Bundle().apply{
+                            val gson = Gson()
+                            val albumJson = gson.toJson(album)
+                            putString("album", albumJson)
+                        }
+                    })
+                    .commitAllowingStateLoss()
+
+            }
+        })
+        //리사이클뷰에 아이템을 클릭했을 때, 프래그먼트로 전환.
 
         val bannerAdapter = BannerVPAdapter(this)
         bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp))
