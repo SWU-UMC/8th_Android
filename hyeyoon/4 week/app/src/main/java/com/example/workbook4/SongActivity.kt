@@ -6,6 +6,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -19,6 +20,7 @@ class SongActivity : AppCompatActivity() {
     lateinit var timer : Timer
     private var mediaPlayer: MediaPlayer? = null
     private var gson: Gson = Gson()
+    private var isRepeat: Boolean = false // 반복재생 여부
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +44,7 @@ class SongActivity : AppCompatActivity() {
         }
 
         binding.songRepeatIv.setOnClickListener {
-            restartSong()
+            isRepeat = !isRepeat // 반복재생 상태 토글
         }
     }
 
@@ -107,7 +109,16 @@ class SongActivity : AppCompatActivity() {
                 while (true){
 
                     if (second >= playTime){
-                        break
+                        if (second >= playTime) {
+                            if(isRepeat) {
+                                second = 0
+                                mills = 0f
+                                mediaPlayer?.seekTo(0)
+                                mediaPlayer?.start()
+                            } else {
+                                break
+                            }
+                        }
                     }
 
                     if (isPlaying){
@@ -132,18 +143,7 @@ class SongActivity : AppCompatActivity() {
             }catch (e: InterruptedException){
                 Log.d("Song","쓰레드가 죽었습니다. ${e.message}")
             }
-
-
         }
-
-    }
-
-    private fun restartSong() {
-        mediaPlayer?.seekTo(0) // 기존 재생 멈추고 처음으로 이동
-        mediaPlayer?.start()
-
-        timer.interrupt() // 기존 타이머 중지
-        startTimer() // Timer 다시 새로 만들어서 실행
     }
 
     override fun onPause() {
