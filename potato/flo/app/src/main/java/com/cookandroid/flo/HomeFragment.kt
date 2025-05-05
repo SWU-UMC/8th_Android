@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.cookandroid.flo.databinding.FragmentHomeBinding
@@ -17,7 +18,7 @@ import me.relex.circleindicator.CircleIndicator3
 class HomeFragment : Fragment() {
 
     lateinit var binding: FragmentHomeBinding
-    private var albumDates = ArrayList<Album>()
+    private var albumDatas = ArrayList<Album>()
 
     private val handler = Handler(Looper.getMainLooper()) // 🔹 핸들러 추가
 
@@ -36,7 +37,7 @@ class HomeFragment : Fragment() {
 //                .commitAllowingStateLoss()
 //        }
 
-        albumDates.apply {
+        albumDatas.apply {
             add(Album("Butter", "방탄소년단(BTS)", R.drawable.img_album_exp))
             add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
             add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
@@ -44,6 +45,11 @@ class HomeFragment : Fragment() {
             add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
             add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
         }
+
+        val albumRVAdapter = AlbumRVAdapter(albumDatas)
+        //리사이클 뷰에 어뎁터 연결!
+        binding.homeTodayAlbumRv.adapter = albumRVAdapter
+        binding.homeTodayAlbumRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
 
         val bannerAdapter = BannerVPAdapter(this)
