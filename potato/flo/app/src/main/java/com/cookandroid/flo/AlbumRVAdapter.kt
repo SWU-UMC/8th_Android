@@ -9,11 +9,23 @@ class AlbumRVAdapter(private val albumList: ArrayList<Album>) : RecyclerView.Ada
 
     interface MyItemClickListener{
         fun onItemClick(album: Album)
+        fun onRemoveAlbum(position: Int)
     }
 
     private lateinit var myItemClickListener: MyItemClickListener
     fun setMyItemClickListener(itemClickListener: MyItemClickListener){
         myItemClickListener = itemClickListener
+    }
+
+    //앨범 데이터를 받아서 리스트 추가
+    fun addItem(album: Album){
+        albumList.add(album)
+        notifyDataSetChanged()
+    }
+
+    fun removeItem(position: Int){
+        albumList.removeAt(position)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): AlbumRVAdapter.ViewHolder {
@@ -27,8 +39,12 @@ class AlbumRVAdapter(private val albumList: ArrayList<Album>) : RecyclerView.Ada
         //매번 리스트를 받아옴?
         holder.bind(albumList[position])
         holder.itemView.setOnClickListener{ myItemClickListener.onItemClick(albumList[position])
+        //타이틀이 클릭되었을 때,
+        //holder.binding.itemAlbumTitleTv.setOnClickListener{
+           // myItemClickListener.onRemoveAlbum(position)
 
         }
+
     }
 
     override fun getItemCount(): Int = albumList.size
@@ -44,5 +60,6 @@ class AlbumRVAdapter(private val albumList: ArrayList<Album>) : RecyclerView.Ada
         }
 
     }
+
 
 }

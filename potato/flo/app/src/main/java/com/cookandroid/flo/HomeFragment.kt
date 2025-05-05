@@ -55,17 +55,14 @@ class HomeFragment : Fragment() {
 
         albumRVAdapter.setMyItemClickListener(object : AlbumRVAdapter.MyItemClickListener{
 
-            override fun onItemClick(album: Album) {
-                (context as MainActivity).supportFragmentManager.beginTransaction()
-                    .replace(R.id.main_frm ,  AlbumFragment().apply{
-                        arguments = Bundle().apply{
-                            val gson = Gson()
-                            val albumJson = gson.toJson(album)
-                            putString("album", albumJson)
-                        }
-                    })
-                    .commitAllowingStateLoss()
 
+            override fun onItemClick(album: Album) {
+                extracted(album)
+
+            }
+
+            override fun onRemoveAlbum(position: Int) {
+                albumRVAdapter.removeItem(position)
             }
         })
         //리사이클뷰에 아이템을 클릭했을 때, 프래그먼트로 전환.
@@ -104,6 +101,18 @@ class HomeFragment : Fragment() {
         startAutoSlide()
 
         return binding.root
+    }
+
+    private fun extracted(album: Album) {
+        (context as MainActivity).supportFragmentManager.beginTransaction()
+            .replace(R.id.main_frm, AlbumFragment().apply {
+                arguments = Bundle().apply {
+                    val gson = Gson()
+                    val albumJson = gson.toJson(album)
+                    putString("album", albumJson)
+                }
+            })
+            .commitAllowingStateLoss()
     }
 
     //여기는 잘 몰라서, 찾아봄.
