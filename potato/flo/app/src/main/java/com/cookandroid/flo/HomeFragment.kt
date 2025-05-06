@@ -3,6 +3,7 @@ package com.cookandroid.flo
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.cookandroid.flo.databinding.FragmentHomeBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
+import androidx.appcompat.app.AppCompatActivity
 import me.relex.circleindicator.CircleIndicator3
 
 
@@ -40,8 +42,8 @@ class HomeFragment : Fragment() {
 //        }
 
         albumDatas.apply {
+            add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2,music = "music_lilac")) //음악 재생을 위함.
             add(Album("Butter", "방탄소년단(BTS)", R.drawable.img_album_exp))
-            add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
             add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
             add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
             add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
@@ -63,6 +65,28 @@ class HomeFragment : Fragment() {
 
             override fun onRemoveAlbum(position: Int) {
                 albumRVAdapter.removeItem(position)
+            }
+
+            override fun onPlayClick(album: Album) {
+
+                Log.d("HomeFragment", "Play button clicked: ${album.music}")
+                val song = Song(
+                    title = album.title ?: "",
+                    singer = album.singer ?: "",
+                    second = 0,
+                    playtime = 60,
+                    isPlaying = true,
+                    music = album.music)
+                // SharedPreferences에 저장
+                val sharedPreferences = requireActivity().getSharedPreferences("song", AppCompatActivity.MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                val songJson = Gson().toJson(song)
+                editor.putString("songData", songJson)
+                editor.apply()
+
+                // 수정: MainActivity에 전달 (null 체크 + 음악 존재 여부는 MainActivity에서 처리)
+                (activity as? MainActivity)?.setMiniPlayer(song)
+
             }
         })
         //리사이클뷰에 아이템을 클릭했을 때, 프래그먼트로 전환.
@@ -103,6 +127,7 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    // 수정: 앨범 클릭 시 상세 페이지 이동 (원래 코드 유지)
     private fun extracted(album: Album) {
         (context as MainActivity).supportFragmentManager.beginTransaction()
             .replace(R.id.main_frm, AlbumFragment().apply {
@@ -114,6 +139,7 @@ class HomeFragment : Fragment() {
             })
             .commitAllowingStateLoss()
     }
+
 
     //여기는 잘 몰라서, 찾아봄.
    private fun slideToNextPage() {

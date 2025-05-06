@@ -1,5 +1,6 @@
 package com.cookandroid.flo
 
+import android.util.Log
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ class AlbumRVAdapter(private val albumList: ArrayList<Album>) : RecyclerView.Ada
     interface MyItemClickListener{
         fun onItemClick(album: Album)
         fun onRemoveAlbum(position: Int)
+        fun onPlayClick(album: Album)  // 버튼 클릭 이벤트 추가.
     }
 
     private lateinit var myItemClickListener: MyItemClickListener
@@ -38,12 +40,12 @@ class AlbumRVAdapter(private val albumList: ArrayList<Album>) : RecyclerView.Ada
     override fun onBindViewHolder(holder: AlbumRVAdapter.ViewHolder, position: Int) {
         //매번 리스트를 받아옴?
         holder.bind(albumList[position])
-        holder.itemView.setOnClickListener{ myItemClickListener.onItemClick(albumList[position])
+        //holder.itemView.setOnClickListener{ myItemClickListener.onItemClick(albumList[position])
         //타이틀이 클릭되었을 때,
         //holder.binding.itemAlbumTitleTv.setOnClickListener{
            // myItemClickListener.onRemoveAlbum(position)
 
-        }
+
 
     }
 
@@ -57,6 +59,18 @@ class AlbumRVAdapter(private val albumList: ArrayList<Album>) : RecyclerView.Ada
             binding.itemAlbumTitleTv.text = album.title
             binding.itemAlbumSingerTv.text = album.singer
             binding.itemAlbumCoverImgIv.setImageResource(album.coverImg!!)
+
+            // 앨범 전체 클릭
+            binding.root.setOnClickListener {
+                myItemClickListener.onItemClick(album)
+            }
+
+            // 재생 버튼 클릭
+            binding.itemAlbumPlayImgIv.setOnClickListener {
+                Log.d("AlbumRVAdapter", "Play clicked for ${album.title}")
+                myItemClickListener.onPlayClick(album)
+            }
+
         }
 
     }
