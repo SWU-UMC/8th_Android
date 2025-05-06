@@ -34,7 +34,25 @@ class SaveSongRVAdapter(private val songList: ArrayList<SaveSong>) : RecyclerVie
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val song = songList[position]  // song을 정의합니다.
+
         holder.bind(songList[position])
+        holder.itemView.setOnClickListener {
+            myItemClickListener.onItemClick(songList[position])
+        }
+
+        // 스위치 리스너 초기화 (필수!)
+        holder.binding.songSwitch.setOnCheckedChangeListener(null)
+
+        // 스위치 상태 반영
+        holder.binding.songSwitch.isChecked = song.isChecked
+
+        // 스위치 상태 변경 시 데이터도 변경
+        holder.binding.songSwitch.setOnCheckedChangeListener { _, isChecked ->
+            song.isChecked = isChecked
+        }
+
+        // 클릭 리스너
         holder.itemView.setOnClickListener {
             myItemClickListener.onItemClick(songList[position])
         }

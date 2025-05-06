@@ -18,9 +18,11 @@
         app:layout_constraintStart_toStartOf="parent" />
 
 
+
+
     <TextView
         android:id="@+id/song_title_tv"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="날 봐 귀순"
         android:textSize="16sp"
@@ -44,6 +46,14 @@
         app:layout_constraintStart_toStartOf="@+id/song_title_tv"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <Switch
+        android:id="@+id/song_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toStartOf="@id/song_play_btn"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
     <ImageButton
         android:id="@+id/song_play_btn"
         android:layout_width="45dp"
@@ -52,11 +62,10 @@
         android:padding="0dp"
         android:src="@drawable/btn_miniplayer_play"
         android:scaleType="centerInside"
+        android:layout_marginEnd="8dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/song_menu_btn"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintEnd_toStartOf="@+id/song_menu_btn" />
 
 
     <ImageButton
@@ -70,10 +79,10 @@
         android:padding="0dp"
         android:scaleType="fitCenter"
         android:src="@drawable/more_vert"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.4" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 
 
 

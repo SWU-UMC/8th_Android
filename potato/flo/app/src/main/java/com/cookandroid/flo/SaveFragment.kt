@@ -40,6 +40,14 @@ class SaveFragment : Fragment() {
             add(SaveSong("whiplash", "asepa", R.drawable.aespa_whiplash))
             add(SaveSong("sign", "izna", R.drawable.izna_sign))
             add(SaveSong("like jennie", "제니", R.drawable.jennie_like_jennie))
+            add(SaveSong("날 봐 귀순", "대성", R.drawable.see_me))
+            add(SaveSong("Extral", "제니", R.drawable.jennie_extral))
+            add(SaveSong("whiplash", "asepa", R.drawable.aespa_whiplash))
+            add(SaveSong("sign", "izna", R.drawable.izna_sign))
+            add(SaveSong("날 봐 귀순", "대성", R.drawable.see_me))
+            add(SaveSong("Extral", "제니", R.drawable.jennie_extral))
+            add(SaveSong("whiplash", "asepa", R.drawable.aespa_whiplash))
+            add(SaveSong("sign", "izna", R.drawable.izna_sign))
         }
     }
 
