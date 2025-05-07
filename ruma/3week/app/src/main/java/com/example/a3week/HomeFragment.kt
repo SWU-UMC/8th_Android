@@ -15,7 +15,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), CommunicationInterface {
 
     lateinit var binding: FragmentHomeBinding
 
@@ -34,7 +34,7 @@ class HomeFragment : Fragment() {
         albumDatas.apply {
             add(Album("Butter", "방탄소년단 (BTS)", R.drawable.img_album_exp))
             add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
-            add(Album("Next Level", "에스파 (AESPA)", R.drawable.img_album_exp3))
+            add(Album("Next Level", "에스파 (AESPA)", R.drawable.img_album_exp))
             add(Album("Boy with Luv", "방탄소년단 (BTS)", R.drawable.img_album_exp4))
             add(Album("BBoom BBoom", "모모랜드 (MOMOLAND)", R.drawable.img_album_exp5))
             add(Album("Weekend", "태연 (Tae Yeon)", R.drawable.img_album_exp6))
@@ -47,8 +47,12 @@ class HomeFragment : Fragment() {
             LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
 
         albumRVAdapter.setItemClickListener(object : AlbumRVAdapter.OnItemClickListener {
-            override fun onItemClick(album: Album) {
+            override fun onItemClick(album : Album) {
                 changeToAlbumFragment(album)
+            }
+
+            override fun onPlayAlbum(album: Album) {
+                sendData(album)
             }
         })
 
@@ -103,5 +107,12 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         autoSlideExecutor.shutdown()
+    }
+
+    override fun sendData(album: Album) {
+        if (activity is MainActivity) {
+            val activity = activity as MainActivity
+            activity.updateMainPlayerCl(album)
+        }
     }
 }
