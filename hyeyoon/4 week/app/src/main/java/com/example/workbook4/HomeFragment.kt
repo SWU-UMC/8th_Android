@@ -1,5 +1,6 @@
 package com.example.workbook4
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,10 +20,21 @@ class HomeFragment : Fragment() {
     private var currentPage = 0
     private lateinit var pagerThread: Thread
     private var albumDatas = ArrayList<Album>()
+    interface AlbumClickListener {
+        fun onAlbumSelected(album: Album)
+    }
+    private var albumClickListener: AlbumClickListener? = null
 
     private val handler = Handler(Looper.getMainLooper()) {
         setPage()
         true
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is AlbumClickListener) {
+            albumClickListener = context
+        }
     }
 
     inner class PagerRunnable : Runnable {
@@ -50,9 +62,6 @@ class HomeFragment : Fragment() {
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-//        binding.homeAlbumImgIv1.setOnClickListener {
-//            (context as MainActivity).supportFragmentManager.beginTransaction().replace(R.id.main_frm, AlbumFragment()).commitAllowingStateLoss()
-//        }
 
         // 데이터 리스트 생성 더미 데이터
         albumDatas.apply {
@@ -70,13 +79,7 @@ class HomeFragment : Fragment() {
 
         albumRVAdapter.setMyItemClickListener(object: AlbumRVAdapter.MyItemClickListener{
             override fun onItemClick(album: Album) {
-                (context as MainActivity).supportFragmentManager.beginTransaction().replace(R.id.main_frm, AlbumFragment().apply {
-                    arguments = Bundle().apply {
-                        val gson = Gson()
-                        val albumJson = gson.toJson(album)
-                        putString("album", albumJson)
-                    }
-                }).commitAllowingStateLoss()
+                albumClickListener?.onAlbumSelected(album)
             }
         })
 
