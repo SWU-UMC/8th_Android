@@ -55,6 +55,13 @@
             android:layout_marginTop="10dp"
             android:src="@drawable/btn_player_more"/>
 
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/item_saved_song_switch"
+            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"/>
+
     </LinearLayout>
 
 

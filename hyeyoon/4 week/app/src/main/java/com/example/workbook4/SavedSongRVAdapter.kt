@@ -27,6 +27,11 @@ class SavedSongRVAdapter(private val albumList: ArrayList<SavedSong>): RecyclerV
 
     override fun onBindViewHolder(holder: SavedSongRVAdapter.ViewHolder, position: Int) {
         holder.bind(albumList[position])
+        holder.binding.itemSavedSongSwitch.setOnCheckedChangeListener(null)
+        holder.binding.itemSavedSongSwitch.isChecked = albumList[position].isSelected
+        holder.binding.itemSavedSongSwitch.setOnCheckedChangeListener { _, isChecked ->
+            albumList[position].isSelected = isChecked
+        }
         holder.binding.itemSavedSongMoreIv.setOnClickListener { savedItemClickListener.onRemoveItem(position) }
     }
 
