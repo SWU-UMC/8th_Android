@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
 
     private var song : Song = Song()
-    private var gson : Gson = Gson()
+    private var gson : Gson = Gson() //PR작성용 주석
 
     private var mediaPlayer: MediaPlayer? = null //음악 재생 추가
     private var miniPlayerTimer: Thread? = null //미니 플레이어 타이머
