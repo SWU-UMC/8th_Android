@@ -1,9 +1,11 @@
 package com.cookandroid.flo
 
 import android.content.Intent
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.cookandroid.flo.databinding.ActivityMainBinding
@@ -15,7 +17,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
 
     private var song : Song = Song()
-    private var gson : Gson = Gson()
+    private var gson : Gson = Gson() //PR작성용 주석
+
+    private var mediaPlayer: MediaPlayer? = null //음악 재생 추가
+    private var miniPlayerTimer: Thread? = null //미니 플레이어 타이머
 
     //registerForActivityResult 이용해서, songActivity에서 토스트 띄우기를 위한... 코드!(송 액티비티로 부터, 제목 - 가수 정보를 받아옴.)
     private val launcher =
@@ -114,11 +119,83 @@ class MainActivity : AppCompatActivity() {
 
     }
     //미니 플레이어에 반영하는 함수!
-    private fun setMiniPlayer(song : Song){
+     fun setMiniPlayer(song : Song){  //외부에서도 접근 가능하게 수정!
         binding.mainMiniplayerTitleTv.text = song.title
         binding.mainMiniplayerSingerTv.text = song.singer
         binding.mainProgressSb.progress = (song.second*100000)/song.playtime //시크바 최대 10만
 
+        // 기존 재생 중 음악 정리
+        mediaPlayer?.release()
+        mediaPlayer = null
+
+        // 음악 파일 재생
+        //val resId = resources.getIdentifier(song.music, "raw", packageName)
+        //mediaPlayer = MediaPlayer.create(this, resId)
+        //mediaPlayer?.start()
+
+        // 음악 파일 리소스 ID 얻기
+        val resId = resources.getIdentifier(song.music, "raw", packageName)
+
+        if (resId == 0) {
+            Log.e("MediaPlayer", "음악 파일 리소스를 찾을 수 없습니다: ${song.music}")
+            Toast.makeText(this, "음악 파일이 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+            return
+        }
+        // mediaPlayer 생성 및 재생 시작
+        mediaPlayer = MediaPlayer.create(this, resId)
+        mediaPlayer?.start()
+
+        // 시크바 동기화 타이머 시작
+        startMiniPlayerProgress()
+
+        //버튼 UI 상태 초기화
+        binding.mainMiniplayerBtn.visibility = View.GONE
+        binding.mainPauseBtn.visibility = View.VISIBLE
+
+
+        // 재생/일시정지 버튼 연결
+        binding.mainMiniplayerBtn.setOnClickListener {
+            mediaPlayer?.start()
+            binding.mainMiniplayerBtn.visibility = View.GONE
+            binding.mainPauseBtn.visibility = View.VISIBLE
+        }
+
+        binding.mainPauseBtn.setOnClickListener {
+            mediaPlayer?.pause()
+            binding.mainPauseBtn.visibility = View.GONE
+            binding.mainMiniplayerBtn.visibility = View.VISIBLE
+        }
+
+        // 음악이 끝났을 때 처리
+        mediaPlayer?.setOnCompletionListener {
+            binding.mainPauseBtn.visibility = View.GONE
+            binding.mainMiniplayerBtn.visibility = View.VISIBLE
+        }
+
+
+    }
+
+    private fun startMiniPlayerProgress() {
+
+
+        miniPlayerTimer?.interrupt()
+        miniPlayerTimer = object : Thread() {
+            override fun run() {
+                try {
+                    while (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+                        val current = mediaPlayer!!.currentPosition
+                        val total = mediaPlayer!!.duration
+                        runOnUiThread {
+                            binding.mainProgressSb.progress = (current * 100000) / total
+                        }
+                        sleep(500)
+                    }
+                } catch (e: InterruptedException) {
+                    Log.d("MiniPlayer", "타이머 쓰레드 중지됨: ${e.message}")
+                }
+            }
+        }
+        miniPlayerTimer?.start()
     }
 
 
@@ -139,6 +216,16 @@ class MainActivity : AppCompatActivity() {
         setMiniPlayer(song)
 
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer?.release()
+        mediaPlayer = null
+
+        //타이머도 함께 정리
+        miniPlayerTimer?.interrupt()
+        miniPlayerTimer = null
     }
 
 

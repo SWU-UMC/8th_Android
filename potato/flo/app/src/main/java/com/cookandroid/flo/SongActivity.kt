@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.cookandroid.flo.databinding.ActivitySongBinding
 import com.google.gson.Gson
@@ -26,6 +27,9 @@ class SongActivity : AppCompatActivity() {
 
     //Gson 소환!
     private var gson : Gson = Gson()
+
+    //수정! 한 곡 반복 기능을 실제 음악 종료 후 타이머 다시 시작을 구현
+    private var isOneRepeatOn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +78,8 @@ class SongActivity : AppCompatActivity() {
             binding.songSingerNameTv.text=intent.getStringExtra("singer")*/
         //1곡 재생 버튼!
         binding.songRepeatIv.setOnClickListener {
-            restartSong()
+            isOneRepeatOn = !isOneRepeatOn
+            Toast.makeText(this, if (isOneRepeatOn) "한 곡 반복 ON" else "한 곡 반복 OFF", Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -195,7 +200,17 @@ class SongActivity : AppCompatActivity() {
             try{
                 while(true){
                     if(second >= playTime){
-                        break
+                        if (isOneRepeatOn) {
+                            second = 0
+                            mills = 0f
+                            runOnUiThread {
+                                mediaPlayer?.seekTo(0)
+                                mediaPlayer?.start()
+                                setPlayerStatus(true)
+                            }
+                        } else {
+                            break
+                        }
                     }
                     if (isPlaying){
                         sleep(50)

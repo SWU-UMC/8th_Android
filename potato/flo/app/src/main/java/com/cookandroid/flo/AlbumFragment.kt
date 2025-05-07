@@ -10,11 +10,13 @@ import androidx.fragment.app.Fragment
 import com.cookandroid.flo.databinding.FragmentAlbumBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.gson.Gson
 
 
 class AlbumFragment : Fragment() {
 
     lateinit var binding: FragmentAlbumBinding
+    private var gson: Gson = Gson()
 
     private val information = arrayListOf("수록곡", "상세정보", "영상")
 
@@ -30,6 +32,11 @@ class AlbumFragment : Fragment() {
         val singerName = arguments?.getString("singerName") ?: "가수 이름 없음"
         val albumImageResId = arguments?.getInt("albumImageResId") ?: R.drawable.img_album_exp2
 
+        val albumJson = arguments?.getString("album")
+        val album = gson.fromJson(albumJson,Album::class.java)
+        setInit(album)
+
+
         binding.albumBackIv.setOnClickListener {
             (context as MainActivity).supportFragmentManager.beginTransaction()
                 .replace(R.id.main_frm, HomeFragment())
@@ -43,6 +50,12 @@ class AlbumFragment : Fragment() {
         }.attach()
 
         return binding.root
+    }
+
+    private fun setInit(album: Album){
+        binding.albumAlbumIv.setImageResource(album.coverImg!!)
+        binding.albumMusicTitleTv.text = album.title.toString()
+        binding.albumSingerNameTv.text = album.singer.toString()
     }
 }
 
