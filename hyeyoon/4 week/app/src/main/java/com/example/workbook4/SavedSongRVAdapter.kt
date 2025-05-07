@@ -6,6 +6,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.workbook4.databinding.ItemSavedSongBinding
 
 class SavedSongRVAdapter(private val albumList: ArrayList<SavedSong>): RecyclerView.Adapter<SavedSongRVAdapter.ViewHolder>() {
+    interface SavedItemClickListener {
+        fun onRemoveItem(position: Int)
+    }
+
+    private lateinit var savedItemClickListener: SavedItemClickListener
+    fun setMyItemClickListener(itemClickListener: SavedItemClickListener) {
+        savedItemClickListener = itemClickListener
+    }
+
+    fun removeItem(position: Int){
+        albumList.removeAt(position)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): SavedSongRVAdapter.ViewHolder {
         val binding: ItemSavedSongBinding = ItemSavedSongBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
@@ -14,6 +27,7 @@ class SavedSongRVAdapter(private val albumList: ArrayList<SavedSong>): RecyclerV
 
     override fun onBindViewHolder(holder: SavedSongRVAdapter.ViewHolder, position: Int) {
         holder.bind(albumList[position])
+        holder.binding.itemSavedSongMoreIv.setOnClickListener { savedItemClickListener.onRemoveItem(position) }
     }
 
     override fun getItemCount(): Int = albumList.size

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.workbook4.databinding.FragmentHomeBinding
+import com.google.gson.Gson
 
 
 class HomeFragment : Fragment() {
@@ -66,6 +67,18 @@ class HomeFragment : Fragment() {
         val albumRVAdapter = AlbumRVAdapter(albumDatas)
         binding.homeTodayMusicAlbumRv.adapter = albumRVAdapter
         binding.homeTodayMusicAlbumRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+        albumRVAdapter.setMyItemClickListener(object: AlbumRVAdapter.MyItemClickListener{
+            override fun onItemClick(album: Album) {
+                (context as MainActivity).supportFragmentManager.beginTransaction().replace(R.id.main_frm, AlbumFragment().apply {
+                    arguments = Bundle().apply {
+                        val gson = Gson()
+                        val albumJson = gson.toJson(album)
+                        putString("album", albumJson)
+                    }
+                }).commitAllowingStateLoss()
+            }
+        })
 
         val bannerAdapter = BannerVpAdapter(this)
         bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp))

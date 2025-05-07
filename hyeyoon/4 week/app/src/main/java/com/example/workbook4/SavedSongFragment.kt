@@ -32,6 +32,12 @@ class SavedSongFragment : Fragment() {
         binding.lockerSavedSongRv.adapter = savedsongRVAdapter
         binding.lockerSavedSongRv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
+        savedsongRVAdapter.setMyItemClickListener(object: SavedSongRVAdapter.SavedItemClickListener {
+            override fun onRemoveItem(position: Int) {
+                savedsongRVAdapter.removeItem(position)
+            }
+        })
+
         return binding.root
     }
 }
