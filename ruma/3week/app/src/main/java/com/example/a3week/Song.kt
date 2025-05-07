@@ -6,5 +6,6 @@ data class Song(
     val second:Int=0,
     var playTime:Int=0,
     var isPlaying: Boolean = false,
-    var music : String ="music_lilac"
+    var music : String ="music_lilac",
+    var isOneTimePlaying: Boolean = false
 )
