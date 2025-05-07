@@ -13,6 +13,7 @@ class LockerAlbumRVAdapter (private val albumList: ArrayList<Album>) : RecyclerV
     }
 
     private lateinit var itemClickListener : OnItemClickListener
+    val switchStatus = mutableMapOf<Int, Boolean>()
 
     fun setItemClickListener(onItemClickListener: OnItemClickListener) {
         this.itemClickListener = onItemClickListener
@@ -27,7 +28,7 @@ class LockerAlbumRVAdapter (private val albumList: ArrayList<Album>) : RecyclerV
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: LockerAlbumRVAdapter.ViewHolder, position: Int) {
         holder.bind(albumList[position])
         holder.itemView.setOnClickListener {
             itemClickListener.onItemClick(albumList[position])
@@ -35,6 +36,12 @@ class LockerAlbumRVAdapter (private val albumList: ArrayList<Album>) : RecyclerV
 
         holder.binding.itemLockerAlbumMoreIv.setOnClickListener {
             itemClickListener.onRemoveAlbum(position)
+        }
+
+        val switch =  holder.binding.switchRV
+        switch.isChecked = switchStatus.getOrDefault(position, false) // NullPointerException 방지
+        switch.setOnClickListener {
+            switchStatus[position] = switch.isChecked // Map에 현재 상태 업데이트
         }
     }
 
@@ -44,7 +51,7 @@ class LockerAlbumRVAdapter (private val albumList: ArrayList<Album>) : RecyclerV
         fun bind(album: Album){
             binding.itemLockerAlbumTitleTv.text = album.title
             binding.itemLockerAlbumSingerTv.text = album.singer
-            binding.itemLockerAlbumCoverImgIv.setImageResource(album.coverImage!!)
+            album.coverImage?.let { binding.itemLockerAlbumCoverImgIv.setImageResource(it) }
         }
     }
 

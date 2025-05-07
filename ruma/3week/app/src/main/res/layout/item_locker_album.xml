@@ -77,6 +77,18 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/item_album_cover_img_cardView"
             app:layout_constraintTop_toTopOf="parent" />
+
     </LinearLayout>
+    <Switch
+        android:id="@+id/switchRV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:switchMinWidth="50dp"
+        android:switchPadding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/item_locker_album_play_img_iv"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
