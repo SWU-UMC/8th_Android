@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.a3week.databinding.FragmentHomeBinding
+import com.google.gson.Gson
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -19,6 +21,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var autoSlideExecutor: ScheduledExecutorService
     private val handler = Handler(Looper.getMainLooper())
+    private var albumDatas = ArrayList<Album>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,10 +30,27 @@ class HomeFragment : Fragment() {
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        binding.homeAlbumImgVp1.setOnClickListener {
-            (context as MainActivity).supportFragmentManager.beginTransaction()
-                .replace(R.id.main_frm, AlbumFragment()).commitAllowingStateLoss()
+        // 데이터 리스트 생성 더미 데이터
+        albumDatas.apply {
+            add(Album("Butter", "방탄소년단 (BTS)", R.drawable.img_album_exp))
+            add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
+            add(Album("Next Level", "에스파 (AESPA)", R.drawable.img_album_exp3))
+            add(Album("Boy with Luv", "방탄소년단 (BTS)", R.drawable.img_album_exp4))
+            add(Album("BBoom BBoom", "모모랜드 (MOMOLAND)", R.drawable.img_album_exp5))
+            add(Album("Weekend", "태연 (Tae Yeon)", R.drawable.img_album_exp6))
         }
+
+        // List를 RecyclerView adapter와 연결하기
+        val albumRVAdapter = AlbumRVAdapter(albumDatas)
+        binding.homeTodayMusicAlbumRv.adapter = albumRVAdapter
+        binding.homeTodayMusicAlbumRv.layoutManager =
+            LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+
+        albumRVAdapter.setItemClickListener(object : AlbumRVAdapter.OnItemClickListener {
+            override fun onItemClick(album: Album) {
+                changeToAlbumFragment(album)
+            }
+        })
 
         // 배너 ViewPager 설정
         val bannerAdapter = BannerVPAdapter(this)
@@ -66,6 +86,18 @@ class HomeFragment : Fragment() {
                 }
             }
         }, 3000, 3000, TimeUnit.MILLISECONDS)
+    }
+
+    private fun changeToAlbumFragment(album: Album) {
+        (context as MainActivity).supportFragmentManager.beginTransaction()
+            .replace(R.id.main_frm, AlbumFragment().apply {
+                arguments = Bundle().apply {
+                    val gson = Gson()
+                    val albumToJson = gson.toJson(album)
+                    putString("album", albumToJson)
+                }
+            })
+            .commitAllowingStateLoss()
     }
 
     override fun onDestroyView() {
