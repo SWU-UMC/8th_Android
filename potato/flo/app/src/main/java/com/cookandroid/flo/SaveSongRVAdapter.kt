@@ -36,9 +36,13 @@ class SaveSongRVAdapter(private val songList: ArrayList<SaveSong>) : RecyclerVie
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val song = songList[position]  // song을 정의합니다.
 
-        holder.bind(songList[position])
+        holder.bind(song) //피드백 반영
+
+        //holder.bind(songList[position])
+
+        //피드백 반영 수정!
         holder.itemView.setOnClickListener {
-            myItemClickListener.onItemClick(songList[position])
+            myItemClickListener.onItemClick(song)
         }
 
         // 스위치 리스너 초기화 (필수!)
@@ -52,10 +56,6 @@ class SaveSongRVAdapter(private val songList: ArrayList<SaveSong>) : RecyclerVie
             song.isChecked = isChecked
         }
 
-        // 클릭 리스너
-        holder.itemView.setOnClickListener {
-            myItemClickListener.onItemClick(songList[position])
-        }
 
         // [...] 버튼 클릭 시 → 삭제
         holder.binding.songMenuBtn.setOnClickListener {
