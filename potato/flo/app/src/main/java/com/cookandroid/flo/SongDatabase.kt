@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Song::class], version =1 )
+@Database(entities = [Song::class], version = 1 )
 abstract class SongDatabase: RoomDatabase() {
 
     abstract fun songDao(): SongDao //룸은 데이터베이스에 지정된 객체와 연결된 dao를 반드시 명시!

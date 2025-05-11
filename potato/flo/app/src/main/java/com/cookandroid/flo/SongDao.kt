@@ -19,4 +19,7 @@ interface SongDao {
 
     @Query("SELECT * FROM SongTable")
     fun getSongs(): List<Song>
+
+    @Query("SELECT * FROM SongTable WHERE id = :id") //송 id를 받으면 그에 맞는 음악으로~
+    fun getSong(id: Int): Song
 }

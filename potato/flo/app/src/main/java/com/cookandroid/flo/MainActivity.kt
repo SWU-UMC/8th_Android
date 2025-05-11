@@ -14,13 +14,20 @@ import com.google.gson.Gson
 
 class MainActivity : AppCompatActivity() {
 
+    companion object {
+        var sharedMediaPlayer: MediaPlayer? = null //SongActivity와 공유할 MediaPlayer
+        var currentSong: Song? = null //Song 공유된 현재 Song
+    }
+
     lateinit var binding: ActivityMainBinding
 
-    private var song : Song = Song()
-    private var gson : Gson = Gson() //PR작성용 주석
+    private var song: Song = Song() //shardPrefersence를 통해  id를 받아옴
+    private var gson: Gson = Gson() //PR작성용 주석
 
     private var mediaPlayer: MediaPlayer? = null //음악 재생 추가
     private var miniPlayerTimer: Thread? = null //미니 플레이어 타이머
+
+
 
     //registerForActivityResult 이용해서, songActivity에서 토스트 띄우기를 위한... 코드!(송 액티비티로 부터, 제목 - 가수 정보를 받아옴.)
     private val launcher =
@@ -45,24 +52,31 @@ class MainActivity : AppCompatActivity() {
         initBottomNavigation()
 
         //val song = Song(
-          //  binding.mainMiniplayerTitleTv.text.toString(),
-           // binding.mainMiniplayerSingerTv.text.toString(),0,60,false, "music_lilac")  //음악 정보 담음.
-            //5주차 수업 때, SongActivity에서 값을 가져오는 코드를 구현했기에 필요 없음
+        //  binding.mainMiniplayerTitleTv.text.toString(),
+        // binding.mainMiniplayerSingerTv.text.toString(),0,60,false, "music_lilac")  //음악 정보 담음.
+        //5주차 수업 때, SongActivity에서 값을 가져오는 코드를 구현했기에 필요 없음
 
         binding.mainPlayerCl.setOnClickListener {
-            val intent = Intent(this, SongActivity::class.java)
-            intent.putExtra("title", song.title)
-            intent.putExtra("singer", song.singer)
-            intent.putExtra("second", song.second)
-            intent.putExtra("playTime", song.playtime)
-            intent.putExtra("isplaying", song.isPlaying)
-            intent.putExtra("music",song.music) //5주차 음악 정보 추가
-            launcher.launch(intent)
-        }
+//            val intent = Intent(this, SongActivity::class.java)
+//            intent.putExtra("title", song.title)
+//            intent.putExtra("singer", song.singer)
+//            intent.putExtra("second", song.second)
+//            intent.putExtra("playTime", song.playtime)
+//            intent.putExtra("isplaying", song.isPlaying)
+//            intent.putExtra("music",song.music) //5주차 음악 정보 추가
+//            launcher.launch(intent)
+            val editor = getSharedPreferences("song", MODE_PRIVATE).edit()
+            editor.putInt("songId", song.id)
+            editor.apply()
 
+            val intent = Intent(this, SongActivity::class.java)
+            startActivity(intent)
+
+        }
     }
 
-    fun openAlbumFragment(albumTitle: String,singerName: String, albumImageResId: Int) {
+
+    fun openAlbumFragment(albumTitle: String, singerName: String, albumImageResId: Int) {
         val albumFragment = AlbumFragment().apply {
             arguments = Bundle().apply {
                 putString("albumTitle", albumTitle)
@@ -120,11 +134,13 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
     //미니 플레이어에 반영하는 함수!
-     fun setMiniPlayer(song : Song){  //외부에서도 접근 가능하게 수정!
+    fun setMiniPlayer(song: Song) {  //외부에서도 접근 가능하게 수정!
+    //fun setMiniPlayer(song: Song, isPlaying: Boolean, songSecond: Int){
         binding.mainMiniplayerTitleTv.text = song.title
         binding.mainMiniplayerSingerTv.text = song.singer
-        binding.mainProgressSb.progress = (song.second*100000)/song.playtime //시크바 최대 10만
+        binding.mainProgressSb.progress = (song.second * 100000) / song.playtime //시크바 최대 10만
 
         // 기존 재생 중 음악 정리
         mediaPlayer?.release()
@@ -143,27 +159,51 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "음악 파일이 존재하지 않습니다", Toast.LENGTH_SHORT).show()
             return
         }
-        // mediaPlayer 생성 및 재생 시작
-        mediaPlayer = MediaPlayer.create(this, resId)
-        mediaPlayer?.start()
+         //mediaPlayer 생성 및 재생 시작
+        mediaPlayer = MediaPlayer.create(this, resId) //MediaPlayer 생성
+       // mediaPlayer?.start() //수정. 미니플레이어 겹침 방지
 
-        // 시크바 동기화 타이머 시작
-        startMiniPlayerProgress()
+        // 공유 변수로 저장
+        sharedMediaPlayer = mediaPlayer //공유 객체에 할당
+        currentSong = song //현재 곡도 공유
 
-        //버튼 UI 상태 초기화
-        binding.mainMiniplayerBtn.visibility = View.GONE
-        binding.mainPauseBtn.visibility = View.VISIBLE
+
+//        mediaPlayer?.start() //바로 재생 시작
+//        // 시크바 동기화 타이머 시작
+//        startMiniPlayerProgress()
+
+        // ✅ SharedPreferences에서 재생 상태 및 위치 로드
+        val spf = getSharedPreferences("song", MODE_PRIVATE)
+        val songSecond = spf.getInt("songSecond", 0)
+        val isPlaying = spf.getBoolean("songIsPlaying", false)
+
+        mediaPlayer?.seekTo(songSecond)
+
+        if (isPlaying) {
+            mediaPlayer?.start()
+            startMiniPlayerProgress()
+            binding.mainMiniplayerBtn.visibility = View.GONE
+            binding.mainPauseBtn.visibility = View.VISIBLE
+        } else {
+            binding.mainMiniplayerBtn.visibility = View.VISIBLE
+            binding.mainPauseBtn.visibility = View.GONE
+        }
+
+//        //버튼 UI 상태 초기화
+//        binding.mainMiniplayerBtn.visibility = View.GONE
+//        binding.mainPauseBtn.visibility = View.VISIBLE
 
 
         // 재생/일시정지 버튼 연결
         binding.mainMiniplayerBtn.setOnClickListener {
-            mediaPlayer?.start()
+            mediaPlayer?.start() //공유 객체 재생
+            startMiniPlayerProgress()
             binding.mainMiniplayerBtn.visibility = View.GONE
             binding.mainPauseBtn.visibility = View.VISIBLE
         }
 
         binding.mainPauseBtn.setOnClickListener {
-            mediaPlayer?.pause()
+            mediaPlayer?.pause()  //공유 객체 일시정지
             binding.mainPauseBtn.visibility = View.GONE
             binding.mainMiniplayerBtn.visibility = View.VISIBLE
         }
@@ -173,6 +213,7 @@ class MainActivity : AppCompatActivity() {
             binding.mainPauseBtn.visibility = View.GONE
             binding.mainMiniplayerBtn.visibility = View.VISIBLE
         }
+
 
 
     }
@@ -202,28 +243,49 @@ class MainActivity : AppCompatActivity() {
 
 
     //액티비티 전환할 때 부터, onStart() 시작되는 것이기에! SongActivity내용을 받아올 것이기에!
-    override fun onStart(){
+    override fun onStart() {
         super.onStart()
-        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE) //데이터를 가지고 있는 이름! 
-        val songJson = sharedPreferences.getString("songData", null) //진짜 데이터 가져오기
+//        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE) //데이터를 가지고 있는 이름!
+//        val songJson = sharedPreferences.getString("songData", null) //진짜 데이터 가져오기
+//
+//        //가져온 데이터를 송 객체에
+//
+//        song = if(songJson == null) { //데이터 값이 없을 때 오류가 나지 않도록!
+//            Song("라일락", "아이유(IU)", 0 , 60,false, "music_lilac")
+//        } else{
+//            gson.fromJson(songJson, song::class.java)
+//        }
+        val spf = getSharedPreferences("song", MODE_PRIVATE)
+        //val songId = spf.getInt("songDB", 0)
+        val songId = spf.getInt("songId", 1)
+        val songSecond = spf.getInt("songSecond", 0)
+        val isPlaying = spf.getBoolean("songIsPlaying", false) //재생 여부.
+        //val songId = spf.getInt("songId", 0)
+        val songDB = SongDatabase.getInstance(this)!!
 
-        //가져온 데이터를 송 객체에
+        song = songDB.songDao().getSong(songId)
+        song.second = songSecond / 1000 // 초 단위로 변환 (UI용)
+        song.isPlaying = isPlaying
 
-        song = if(songJson == null) { //데이터 값이 없을 때 오류가 나지 않도록!
-            Song("라일락", "아이유(IU)", 0 , 60,false, "music_lilac")
-        } else{
-            gson.fromJson(songJson, song::class.java)
-        }
 
+//        song = if (songId == 0) {
+//            songDB.songDao().getSong(1)
+//        } else {
+//            songDB.songDao().getSong(songId)
+//        }
+        Log.d("song ID", song.id.toString())
         setMiniPlayer(song)
+        //db에서 해당하는 id의 노래를 가져와야 함.
 
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer?.release()
+       // mediaPlayer?.release()
+        sharedMediaPlayer?.release()
         mediaPlayer = null
+        sharedMediaPlayer = null
 
         //타이머도 함께 정리
         miniPlayerTimer?.interrupt()
@@ -238,6 +300,19 @@ class MainActivity : AppCompatActivity() {
 
         //데이터가 없다면 더미데이터를 넣어야 함.
         if (songs.isNotEmpty()) return
+
+        songDB.songDao().insert(
+            Song(
+                "LiLac", //title
+                "IU", //singer
+                0,
+                240,
+                false,
+                "music_lilac",
+                R.drawable.img_album_exp2,
+                false,
+            )
+        )
 
         songDB.songDao().insert(
             Song(
@@ -307,7 +382,5 @@ class MainActivity : AppCompatActivity() {
         val _songs = songDB.songDao().getSongs()
         Log.d("DB data", _songs.toString())
     }
-
-
-
 }
+
