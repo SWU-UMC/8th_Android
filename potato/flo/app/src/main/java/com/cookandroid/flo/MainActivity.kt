@@ -40,6 +40,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        inputDummySongs()
+
         initBottomNavigation()
 
         //val song = Song(
@@ -226,6 +228,84 @@ class MainActivity : AppCompatActivity() {
         //타이머도 함께 정리
         miniPlayerTimer?.interrupt()
         miniPlayerTimer = null
+    }
+
+    private fun inputDummySongs() {
+        //Song db에 인스턴스를 받아옴.
+        val songDB = SongDatabase.getInstance(this)
+        //db에 송 데이터가 들어간지 확인하기 위해 SongDB 정보를 받아와야 함.
+        val songs = songDB.songDao().getSongs()
+
+        //데이터가 없다면 더미데이터를 넣어야 함.
+        if (songs.isNotEmpty()) return
+
+        songDB.songDao().insert(
+            Song(
+                "See Me gwisun", //title
+                "Daeseong", //singer
+                0,
+                240,
+                false,
+                "music_seeme",
+                R.drawable.see_me,
+                false,
+            )
+        )
+
+        songDB.songDao().insert(
+            Song(
+                "Sign", //title
+                "Izna", //singer
+                0,
+                240,
+                false,
+                "music_sign",
+                R.drawable.izna_sign,
+                false,
+            )
+        )
+
+        songDB.songDao().insert(
+            Song(
+                "Like Jennie", //title
+                "Jennie", //singer
+                0,
+                240,
+                false,
+                "music_likejennie",
+                R.drawable.jennie_like_jennie,
+                false,
+            )
+        )
+
+        songDB.songDao().insert(
+            Song(
+                "Whiplash", //title
+                "Aespa", //singer
+                0,
+                240,
+                false,
+                "music_whiplash",
+                R.drawable.aespa_whiplash,
+                false,
+            )
+        )
+
+        songDB.songDao().insert(
+            Song(
+                "Extral", //title
+                "Jennie", //singer
+                0,
+                240,
+                false,
+                "music_Extral",
+                R.drawable.jennie_extral,
+                false,
+            )
+        )
+
+        val _songs = songDB.songDao().getSongs()
+        Log.d("DB data", _songs.toString())
     }
 
 

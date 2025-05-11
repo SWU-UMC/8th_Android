@@ -8,11 +8,13 @@ import androidx.room.RoomDatabase
 @Database(entities = [Song::class], version =1 )
 abstract class SongDatabase: RoomDatabase() {
 
+    abstract fun songDao(): SongDao //룸은 데이터베이스에 지정된 객체와 연결된 dao를 반드시 명시!
+
     companion object{
         private var instance : SongDatabase? = null
 
         @Synchronized
-        fun getInstance(context: Context) : SongDatabase?{
+        fun getInstance(context: Context) : SongDatabase {
             if(instance == null)
             {
                 synchronized(SongDatabase::class){
@@ -25,7 +27,7 @@ abstract class SongDatabase: RoomDatabase() {
                 }
             }
 
-            return instance
+            return instance!! //non-null을 반환하므로 !! 사용 오류를 잡기 위하.
         }
     }
 }
