@@ -11,7 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.workbook4.databinding.ActivityMainBinding
 import com.google.gson.Gson
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), HomeFragment.AlbumClickListener {
     lateinit var binding: ActivityMainBinding
     companion object {const val STRING_INTENT_KEY = "my_string_key"}
     private var song:Song = Song()
@@ -92,6 +92,7 @@ class MainActivity : AppCompatActivity() {
         binding.mainMiniplayerSingerTv.text = song.singer
         binding.mainProgressSb.progress = (song.second * 100)/song.playTie
     }
+
     override fun onStart() {
         super.onStart() // 액티비티 전환될 때 onStart부터 시작
         val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE) // SharedPreference에 저장된 이름 가져옴
@@ -104,5 +105,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         setMiniPlayer(song) // miniplayer에 song 데이터 실제로 반영
+    }
+
+    override fun onAlbumSelected(album: Album) {
+        // 미니플레이어 UI 업데이트
+        binding.mainMiniplayerTitleTv.text = album.title
+        binding.mainMiniplayerSingerTv.text = album.singer
     }
 }
