@@ -104,6 +104,10 @@ class SongActivity : AppCompatActivity() {
             isOneRepeatOn = !isOneRepeatOn
             Toast.makeText(this, if (isOneRepeatOn) "한 곡 반복 ON" else "한 곡 반복 OFF", Toast.LENGTH_SHORT).show()
         }
+        binding.songLikeIv.setOnClickListener{
+            setLike(songs[nowPos].isLike)
+
+        }
 
     }
     private fun initSong() {
@@ -124,7 +128,28 @@ class SongActivity : AppCompatActivity() {
             return
         }
 
+        //DB에서 최신 값 가져와 덮어쓰기
+        songs[nowPos] = songDB.songDao().getSong(songId)
+
         setPlayer(songs[nowPos])
+    }
+
+    private fun setLike(isLike: Boolean ){
+        songs[nowPos].isLike = isLike //아직 디비 값 업데이트 전
+
+        val newState = !isLike
+        //DB 업데이트
+        songDB.songDao().updateIsLikeById(newState, songs[nowPos].id)
+
+        //메모리 상태도 동기화
+        songs[nowPos].isLike = newState
+
+        // UI 반영
+        if (newState) {
+            binding.songLikeIv.setImageResource(R.drawable.ic_my_like_on)
+        } else {
+            binding.songLikeIv.setImageResource(R.drawable.ic_my_like_off)
+        }
     }
 
     private fun moveSong(direct: Int) {
@@ -220,6 +245,14 @@ class SongActivity : AppCompatActivity() {
 
         startTimer()
         setPlayerStatus(MainActivity.sharedMediaPlayer?.isPlaying == true)
+
+        if(song.isLike){
+            binding.songLikeIv.setImageResource(R.drawable.ic_my_like_on)
+        }
+        else {
+            binding.songLikeIv.setImageResource(R.drawable.ic_my_like_off)
+        }
+
     }
 
     private fun togglePlayerStatus() { // 재생/멈춤 토글 함수 - 수정됨

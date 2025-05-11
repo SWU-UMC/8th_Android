@@ -1,5 +1,6 @@
 package com.cookandroid.flo
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -29,7 +30,8 @@ class SaveSongRVAdapter(private val songList: ArrayList<SaveSong>) : RecyclerVie
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = SaveItemSongBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            SaveItemSongBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -65,11 +67,37 @@ class SaveSongRVAdapter(private val songList: ArrayList<SaveSong>) : RecyclerVie
 
     override fun getItemCount(): Int = songList.size
 
-    inner class ViewHolder(val binding: SaveItemSongBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: SaveItemSongBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(song: SaveSong) {
             binding.songTitleTv.text = song.title
             binding.songSingerTv.text = song.singer
             binding.songAlbumIv.setImageResource(song.coverImg)
         }
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun addSongs(songs: ArrayList<SaveSong>) {
+        this.songList.clear()
+        this.songList.addAll(songs.map {
+            SaveSong(it.title, it.singer, it.coverImg ?: 0, false)
+        })
+
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun removeSong(position: Int) {
+        songList.removeAt(position)
+        notifyDataSetChanged()
+    }
+
+//    inner class ViewHolder(val binding: ItemSongBinding) : RecyclerView.ViewHolder(binding.root) {
+//        fun bind(song: Song) {
+//            binding.itemSongImgTv.setImageResource(song.coverImg!!)
+//            binding.itemSongTitleTv.text = song.title
+//            binding.itemSongSingerTv.text = song.singer
+//        }
+//    }
 }
+

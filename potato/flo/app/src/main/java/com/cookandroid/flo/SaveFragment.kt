@@ -34,21 +34,22 @@ class SaveFragment : Fragment() {
 
     // 저장된 곡 리스트 초기화
     private fun initSaveSongList() {
-        saveSongList.apply {
-            add(SaveSong("날 봐 귀순", "대성", R.drawable.see_me))
-            add(SaveSong("Extral", "제니", R.drawable.jennie_extral))
-            add(SaveSong("whiplash", "asepa", R.drawable.aespa_whiplash))
-            add(SaveSong("sign", "izna", R.drawable.izna_sign))
-            add(SaveSong("like jennie", "제니", R.drawable.jennie_like_jennie))
-            add(SaveSong("날 봐 귀순", "대성", R.drawable.see_me))
-            add(SaveSong("Extral", "제니", R.drawable.jennie_extral))
-            add(SaveSong("whiplash", "asepa", R.drawable.aespa_whiplash))
-            add(SaveSong("sign", "izna", R.drawable.izna_sign))
-            add(SaveSong("날 봐 귀순", "대성", R.drawable.see_me))
-            add(SaveSong("Extral", "제니", R.drawable.jennie_extral))
-            add(SaveSong("whiplash", "asepa", R.drawable.aespa_whiplash))
-            add(SaveSong("sign", "izna", R.drawable.izna_sign))
-        }
+//        saveSongList.apply {
+//            add(SaveSong("날 봐 귀순", "대성", R.drawable.see_me))
+//            add(SaveSong("Extral", "제니", R.drawable.jennie_extral))
+//            add(SaveSong("whiplash", "asepa", R.drawable.aespa_whiplash))
+//            add(SaveSong("sign", "izna", R.drawable.izna_sign))
+//            add(SaveSong("like jennie", "제니", R.drawable.jennie_like_jennie))
+//            add(SaveSong("날 봐 귀순", "대성", R.drawable.see_me))
+//            add(SaveSong("Extral", "제니", R.drawable.jennie_extral))
+//            add(SaveSong("whiplash", "asepa", R.drawable.aespa_whiplash))
+//            add(SaveSong("sign", "izna", R.drawable.izna_sign))
+//            add(SaveSong("날 봐 귀순", "대성", R.drawable.see_me))
+//            add(SaveSong("Extral", "제니", R.drawable.jennie_extral))
+//            add(SaveSong("whiplash", "asepa", R.drawable.aespa_whiplash))
+//            add(SaveSong("sign", "izna", R.drawable.izna_sign))
+//        }
+
     }
 
     // RecyclerView 어댑터 연결
@@ -68,5 +69,15 @@ class SaveFragment : Fragment() {
                 Toast.makeText(requireContext(), "삭제된 곡: ${position + 1}", Toast.LENGTH_SHORT).show()
             }
         })
+        // ✅ Room DB에서 좋아요된 곡 가져오기
+        val songDB = SongDatabase.getInstance(requireContext())!!
+        val likedSongs = songDB.songDao().getlikedSong(true)
+
+        // ✅ Song → SaveSong 변환 후 추가
+        val saveSongs = likedSongs.map {
+            SaveSong(it.title, it.singer, it.coverImg ?: 0)
+        }
+
+        saveSongRVAdapter.addSongs(ArrayList(saveSongs))
     }
 }
