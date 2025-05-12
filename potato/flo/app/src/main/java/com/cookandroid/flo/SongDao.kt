@@ -21,7 +21,7 @@ interface SongDao {
     fun getSongs(): List<Song>
 
     @Query("SELECT * FROM SongTable WHERE id = :id") //송 id를 받으면 그에 맞는 음악으로~
-    fun getSong(id: Int): Song
+    fun getSong(id: Int): Song?
 
     @Query("UPDATE SongTable SET isLike= :isLike WHERE id = :id")
     fun updateIsLikeById(isLike: Boolean, id: Int) //송 테이블에 매개변수를 던져준 아이디에 라이크 값을 업데이틀 해주려고 함.

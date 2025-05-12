@@ -5,10 +5,11 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Song::class], version = 1 )
+@Database(entities = [Song::class, Album::class], version = 2)
 abstract class SongDatabase: RoomDatabase() {
 
     abstract fun songDao(): SongDao //룸은 데이터베이스에 지정된 객체와 연결된 dao를 반드시 명시!
+    abstract fun albumDao(): AlbumDao // AlbumDao 추가
 
     companion object{
         private var instance : SongDatabase? = null
@@ -21,9 +22,11 @@ abstract class SongDatabase: RoomDatabase() {
                     instance = Room.databaseBuilder(
                         context.applicationContext,
                         SongDatabase::class.java,
-                        "song-database" //다른 데이터 베이스랑 이름 겹치면 꼬임
-
-                    ).allowMainThreadQueries().build() //쓰레드랑 데이터베이스 연동
+                        "song-database"
+                    )
+                        .fallbackToDestructiveMigration() //  이 줄 추가
+                        .allowMainThreadQueries()
+                        .build() //쓰레드랑 데이터베이스 연동
                 }
             }
 

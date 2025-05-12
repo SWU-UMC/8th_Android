@@ -11,6 +11,7 @@ data class Song(
     var singer : String = "",
     var second : Int = 0,
     var playtime : Int = 0,
+    val albumIdx: Int = 0 , //추가
     var isPlaying : Boolean = false,
     //어떤 음악이 재생되는지를 알려줌
     var music: String = "",

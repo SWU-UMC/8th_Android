@@ -150,6 +150,7 @@ class MainActivity : AppCompatActivity() {
         //val resId = resources.getIdentifier(song.music, "raw", packageName)
         //mediaPlayer = MediaPlayer.create(this, resId)
         //mediaPlayer?.start()
+        Log.d("setMiniPlayer", "선택된 곡: ${song.title}, 파일명: ${song.music}")
 
         // 음악 파일 리소스 ID 얻기
         val resId = resources.getIdentifier(song.music, "raw", packageName)
@@ -262,10 +263,24 @@ class MainActivity : AppCompatActivity() {
         val isPlaying = spf.getBoolean("songIsPlaying", false) //재생 여부.
         //val songId = spf.getInt("songId", 0)
         val songDB = SongDatabase.getInstance(this)!!
+        val dbSong = songDB.songDao().getSong(songId)
 
-        song = songDB.songDao().getSong(songId)
-        song.second = songSecond / 1000 // 초 단위로 변환 (UI용)
-        song.isPlaying = isPlaying
+        if (dbSong != null) {
+            song = dbSong
+            song.second = songSecond / 1000
+            song.isPlaying = isPlaying
+            Log.d("song ID", song.id.toString())
+            setMiniPlayer(song)
+        } else {
+            Log.e("onStart", "DB에서 ID=${songId}인 노래를 찾을 수 없습니다.")
+            Toast.makeText(this, "저장된 노래가 존재하지 않습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+//        song = songDB.songDao().getSong(songId)
+//        song.second = songSecond / 1000 // 초 단위로 변환 (UI용)
+//        song.isPlaying = isPlaying
 
 
 //        song = if (songId == 0) {
@@ -273,12 +288,12 @@ class MainActivity : AppCompatActivity() {
 //        } else {
 //            songDB.songDao().getSong(songId)
 //        }
-        Log.d("song ID", song.id.toString())
-        setMiniPlayer(song)
-        //db에서 해당하는 id의 노래를 가져와야 함.
+//        Log.d("song ID", song.id.toString())
+//        setMiniPlayer(song)
+//        //db에서 해당하는 id의 노래를 가져와야 함.
 
 
-    }
+   // }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -293,24 +308,64 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun inputDummySongs() {
-        //Song db에 인스턴스를 받아옴.
         val songDB = SongDatabase.getInstance(this)
-        //db에 송 데이터가 들어간지 확인하기 위해 SongDB 정보를 받아와야 함.
-        val songs = songDB.songDao().getSongs()
+        try {
+            val songs = songDB.songDao().getSongs()
+
+            if (songs.isEmpty()) {
+                Log.d("inputDummySongs", "DB 비어있음 → 더미 삽입 시작")
+                insertDummySongs(songDB) // ✅ 별도 함수 호출
+                return
+            }
+
+            Log.d("inputDummySongs", "DB에 이미 ${songs.size}곡 존재함 → 삽입 생략")
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("inputDummySongs", "DB 오류: ${e.localizedMessage}")
+        }
+    }
+    private fun insertDummySongs(songDB: SongDatabase) {
+        songDB.songDao().insert(
+            Song("LiLac", "IU", 0, 240, 1, false, "music_lilac", R.drawable.img_album_exp2, false)
+        )
+        songDB.songDao().insert(
+            Song("See Me gwisun", "Daeseong", 0, 240, 2, false, "music_seeme", R.drawable.see_me, false)
+        )
+        songDB.songDao().insert(
+            Song("Sign", "Izna", 0, 240, 3, false, "music_sign", R.drawable.izna_sign, false)
+        )
+        songDB.songDao().insert(
+            Song("Like Jennie", "Jennie", 0, 240, 4, false, "music_likejennie", R.drawable.jennie_like_jennie, false)
+        )
+        songDB.songDao().insert(
+            Song("Whiplash", "Aespa", 0, 240, 5, false, "music_whiplash", R.drawable.aespa_whiplash, false)
+        )
+        songDB.songDao().insert(
+            Song("Extral", "Jennie", 0, 240, 6, false, "music_extral", R.drawable.jennie_extral, false)
+        )
+
+        val _songs = songDB.songDao().getSongs()
+        Log.d("insertDummySongs", "삽입 완료: $_songs")
+    }
+}
+
 
         //데이터가 없다면 더미데이터를 넣어야 함.
-        if (songs.isNotEmpty()) return
-
+       //  if (songs.isNotEmpty()) return
+/*
         songDB.songDao().insert(
             Song(
                 "LiLac", //title
                 "IU", //singer
                 0,
                 240,
+                1,
                 false,
                 "music_lilac",
                 R.drawable.img_album_exp2,
-                false,
+                false
+
             )
         )
 
@@ -320,10 +375,12 @@ class MainActivity : AppCompatActivity() {
                 "Daeseong", //singer
                 0,
                 240,
+                2,
                 false,
                 "music_seeme",
                 R.drawable.see_me,
-                false,
+                false
+
             )
         )
 
@@ -333,10 +390,11 @@ class MainActivity : AppCompatActivity() {
                 "Izna", //singer
                 0,
                 240,
+                3,
                 false,
                 "music_sign",
                 R.drawable.izna_sign,
-                false,
+                false
             )
         )
 
@@ -346,10 +404,11 @@ class MainActivity : AppCompatActivity() {
                 "Jennie", //singer
                 0,
                 240,
+                4,
                 false,
                 "music_likejennie",
                 R.drawable.jennie_like_jennie,
-                false,
+                false
             )
         )
 
@@ -359,10 +418,11 @@ class MainActivity : AppCompatActivity() {
                 "Aespa", //singer
                 0,
                 240,
+                5,
                 false,
                 "music_whiplash",
                 R.drawable.aespa_whiplash,
-                false,
+                false
             )
         )
 
@@ -372,10 +432,11 @@ class MainActivity : AppCompatActivity() {
                 "Jennie", //singer
                 0,
                 240,
+                6,
                 false,
-                "music_Extral",
+                "music_extral",
                 R.drawable.jennie_extral,
-                false,
+                false
             )
         )
 
@@ -384,3 +445,4 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+*/

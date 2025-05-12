@@ -6,7 +6,10 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.cookandroid.flo.databinding.ActivitySongBinding
@@ -84,6 +87,30 @@ class SongActivity : AppCompatActivity() {
         songs.addAll(songDB.songDao().getSongs())
     }
 
+    //좋아요시 나오는, 토스트 메시지 구현.
+
+    private fun showLikePopup(isLiked: Boolean) {
+        val inflater = layoutInflater
+        val view = inflater.inflate(R.layout.like_popup, null)
+        val heartIv = view.findViewById<ImageView>(R.id.like_popup_heart_iv)
+
+        // 하트 이미지 설정
+        heartIv.setImageResource(if (isLiked) R.drawable.ic_my_like_on else R.drawable.ic_my_like_off)
+
+        // 애니메이션 설정
+        val anim = AnimationUtils.loadAnimation(
+            this,
+            if (isLiked) R.anim.like_popup_anim else R.anim.unlike_popup_anim
+        )
+        heartIv.startAnimation(anim)
+
+        val toast = Toast(this)
+        toast.view = view
+        toast.setGravity(Gravity.CENTER, 0, 0)
+        toast.duration = Toast.LENGTH_SHORT
+        toast.show()
+    }
+
     private fun initClickListener(){
         binding.songDownIb.setOnClickListener{
             finish()
@@ -105,7 +132,10 @@ class SongActivity : AppCompatActivity() {
             Toast.makeText(this, if (isOneRepeatOn) "한 곡 반복 ON" else "한 곡 반복 OFF", Toast.LENGTH_SHORT).show()
         }
         binding.songLikeIv.setOnClickListener{
-            setLike(songs[nowPos].isLike)
+            //setLike(songs[nowPos].isLike)
+            val isNowLiked = songs[nowPos].isLike
+            setLike(isNowLiked)
+            showLikePopup(!isNowLiked)  // 좋아요 또는 취소 애니메이션 실행
 
         }
 
@@ -128,10 +158,19 @@ class SongActivity : AppCompatActivity() {
             return
         }
 
-        //DB에서 최신 값 가져와 덮어쓰기
-        songs[nowPos] = songDB.songDao().getSong(songId)
+        val updatedSong = songDB.songDao().getSong(songId)
+        if (updatedSong != null) {
+            songs[nowPos] = updatedSong
+            setPlayer(songs[nowPos])
+        } else {
+            Log.e("initSong", "ID=${songId}인 노래를 DB에서 찾을 수 없습니다.")
+            finish()
+        }
 
-        setPlayer(songs[nowPos])
+        //DB에서 최신 값 가져와 덮어쓰기
+        //songs[nowPos] = songDB.songDao().getSong(songId)
+
+        //setPlayer(songs[nowPos])
     }
 
     private fun setLike(isLike: Boolean ){
@@ -338,4 +377,6 @@ class SongActivity : AppCompatActivity() {
             }
         }
     }
+
+
 }

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import com.cookandroid.flo.databinding.ItemAlbumBinding
 
+//앨범 리스트 표시
 class AlbumRVAdapter(private val albumList: ArrayList<Album>) : RecyclerView.Adapter<AlbumRVAdapter.ViewHolder>() {
 
     interface MyItemClickListener{
