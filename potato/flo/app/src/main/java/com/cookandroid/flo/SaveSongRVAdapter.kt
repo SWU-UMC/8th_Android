@@ -60,17 +60,21 @@ class SaveSongRVAdapter(private val songList: ArrayList<SaveSong>) : RecyclerVie
         holder.binding.songSwitch.setOnCheckedChangeListener { _, isChecked ->
             song.isChecked = isChecked
         }
+        //어댑터 삭제 버튼 클릭 처리!
+        holder.binding.songDeleteBtn.setOnClickListener {
+            myItemClickListener.onRemoveSong(song.id)
+        }
 
 
         // [...] 버튼 클릭 시 → 삭제 => 지난 시간 과제. 밑에 새로 이번주차 강의 반영해서 수정.
 //        holder.binding.songMenuBtn.setOnClickListener {
 //            myItemClickListener.onRemoveSong(position)
 //        }
-        holder.binding.itemSongMoreIv.setOnClickListener{
+       /* holder.binding.itemSongMoreIv.setOnClickListener{
             //myItemClickListener.onRemoveSong(songs[position].id)
             myItemClickListener.onRemoveSong(song.id)
             //removeSong(position)
-        }
+        }*/
 
 
 
@@ -101,6 +105,7 @@ class SaveSongRVAdapter(private val songList: ArrayList<SaveSong>) : RecyclerVie
     private fun removeSong(position: Int) {
         songList.removeAt(position)
         notifyDataSetChanged()
+
     }
 
 //    inner class ViewHolder(val binding: ItemSongBinding) : RecyclerView.ViewHolder(binding.root) {

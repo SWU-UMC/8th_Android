@@ -5,12 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cookandroid.flo.databinding.FragmentSaveBinding
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AlertDialog
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.cookandroid.flo.databinding.BottomSheetDialogBinding
 
 class SaveFragment : Fragment() {
 
@@ -37,6 +40,42 @@ class SaveFragment : Fragment() {
 
 
         return binding.root
+    }
+
+    //1. select_all_tv 클릭 시 BottomSheetDialog 띄우기
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.selectAllTv.setOnClickListener {
+            showBottomEditBar()
+        }
+    }
+
+    private fun showBottomEditBar() {
+        val dialog = BottomSheetDialog(requireContext())
+
+        // ViewBinding으로 bottom_sheet_dialog.xml 연결
+        val bottomSheetBinding = BottomSheetDialogBinding.inflate(layoutInflater)
+        dialog.setContentView(bottomSheetBinding.root)
+
+        // 삭제 버튼 클릭
+        bottomSheetBinding.editbarAddplayDelete.setOnClickListener {
+            deleteAllLikedSongs()
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun deleteAllLikedSongs() {
+        // DB에서 업데이트
+        songDB.songDao().updateAllIsLikeFalse()
+
+        // 리스트 초기화
+        saveSongList.clear()
+        saveSongRVAdapter.notifyDataSetChanged()
+
+        Toast.makeText(requireContext(), "전체 곡이 삭제되었습니다", Toast.LENGTH_SHORT).show()
     }
 
     // 저장된 곡 리스트 초기화

@@ -29,5 +29,8 @@ interface SongDao {
     @Query("SELECT * FROM SongTable WHERE isLike= :isLike") //송 id를 받으면 그에 맞는 음악으로~
     fun getlikedSong(isLike: Boolean): List<Song>
 
+    @Query("UPDATE SongTable SET isLike = 0 WHERE isLike = 1")
+    fun updateAllIsLikeFalse()
+
 
 }
