@@ -15,6 +15,7 @@ class SaveFragment : Fragment() {
     lateinit var binding: FragmentSaveBinding
     private lateinit var saveSongRVAdapter: SaveSongRVAdapter
     private val saveSongList = ArrayList<SaveSong>()
+    private lateinit var songDB: SongDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,11 +24,15 @@ class SaveFragment : Fragment() {
     ): View? {
         binding = FragmentSaveBinding.inflate(inflater, container, false)
 
+        // Room DB 초기화
+        songDB = SongDatabase.getInstance(requireContext())!!
         // 샘플 데이터 목록 초기화
         initSaveSongList()
 
         // RecyclerView 연결
         initRecyclerView()
+
+
 
         return binding.root
     }
@@ -58,24 +63,34 @@ class SaveFragment : Fragment() {
         binding.songRv.adapter = saveSongRVAdapter
         binding.songRv.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
+
+
         // 클릭 이벤트 설정
         saveSongRVAdapter.setMyItemClickListener(object : SaveSongRVAdapter.MyItemClickListener {
             override fun onItemClick(song: SaveSong) {
                 Toast.makeText(requireContext(), "클릭한 곡: ${song.title}", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onRemoveSong(position: Int) {
-                saveSongRVAdapter.removeItem(position)
-                Toast.makeText(requireContext(), "삭제된 곡: ${position + 1}", Toast.LENGTH_SHORT).show()
+            override fun onRemoveSong(songId: Int) {
+                songDB.songDao().updateIsLikeById(false, songId)
+
+                // ✅ position 기반 삭제 ❌ → 대신 id로 찾아서 삭제 ✅ -> 리스트 전체 갱신으로 뷰 홀더 포지션 값이 유효하지 않는 문제가 있어서 수정
+                val index = saveSongList.indexOfFirst { it.id == songId }
+                if (index != -1) {
+                    saveSongList.removeAt(index)
+                    saveSongRVAdapter.notifyItemRemoved(index)
+                }
             }
         })
-        // ✅ Room DB에서 좋아요된 곡 가져오기
+
+
+        // Room DB에서 좋아요된 곡 가져오기
         val songDB = SongDatabase.getInstance(requireContext())!!
         val likedSongs = songDB.songDao().getlikedSong(true)
 
-        // ✅ Song → SaveSong 변환 후 추가
+        // Song → SaveSong 변환 후 추가
         val saveSongs = likedSongs.map {
-            SaveSong(it.title, it.singer, it.coverImg ?: 0)
+            SaveSong(it.title, it.singer, it.coverImg ?: 0,false, it.id)
         }
 
         saveSongRVAdapter.addSongs(ArrayList(saveSongs))

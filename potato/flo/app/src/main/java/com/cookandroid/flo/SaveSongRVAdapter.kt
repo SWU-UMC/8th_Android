@@ -10,10 +10,12 @@ class SaveSongRVAdapter(private val songList: ArrayList<SaveSong>) : RecyclerVie
 
     interface MyItemClickListener {
         fun onItemClick(song: SaveSong)
-        fun onRemoveSong(position: Int)
+        fun onRemoveSong(songId: Int)
     }
 
     private lateinit var myItemClickListener: MyItemClickListener
+
+
 
     fun setMyItemClickListener(itemClickListener: MyItemClickListener) {
         myItemClickListener = itemClickListener
@@ -33,6 +35,7 @@ class SaveSongRVAdapter(private val songList: ArrayList<SaveSong>) : RecyclerVie
         val binding =
             SaveItemSongBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
+
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -59,10 +62,18 @@ class SaveSongRVAdapter(private val songList: ArrayList<SaveSong>) : RecyclerVie
         }
 
 
-        // [...] 버튼 클릭 시 → 삭제
-        holder.binding.songMenuBtn.setOnClickListener {
-            myItemClickListener.onRemoveSong(position)
+        // [...] 버튼 클릭 시 → 삭제 => 지난 시간 과제. 밑에 새로 이번주차 강의 반영해서 수정.
+//        holder.binding.songMenuBtn.setOnClickListener {
+//            myItemClickListener.onRemoveSong(position)
+//        }
+        holder.binding.itemSongMoreIv.setOnClickListener{
+            //myItemClickListener.onRemoveSong(songs[position].id)
+            myItemClickListener.onRemoveSong(song.id)
+            //removeSong(position)
         }
+
+
+
     }
 
     override fun getItemCount(): Int = songList.size
@@ -80,7 +91,7 @@ class SaveSongRVAdapter(private val songList: ArrayList<SaveSong>) : RecyclerVie
     fun addSongs(songs: ArrayList<SaveSong>) {
         this.songList.clear()
         this.songList.addAll(songs.map {
-            SaveSong(it.title, it.singer, it.coverImg ?: 0, false)
+            SaveSong(it.title, it.singer, it.coverImg ?: 0, false,it.id)
         })
 
         notifyDataSetChanged()
