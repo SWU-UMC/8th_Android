@@ -18,4 +18,7 @@ interface AlbumDao {
 
     @Query("SELECT * FROM AlbumTable WHERE id = :albumId")
     fun getAlbumById(albumId: Int): Album
+
+    @Query("DELETE FROM AlbumTable")
+    fun deleteAll()
 }

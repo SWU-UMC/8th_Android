@@ -7,9 +7,10 @@ class AlbumVPAdapter(fragment:Fragment) : FragmentStateAdapter(fragment) {
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> SongFragment()
-            1-> DetailFragment()
-            else -> VideoFragment()
+            0 -> SongListFragment()    // 수록곡 탭
+            1 -> DetailFragment()      // 상세정보 탭
+            else -> VideoFragment()    // 영상 탭
         }
     }
+
 }

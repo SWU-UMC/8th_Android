@@ -23,11 +23,13 @@ class HomeFragment : Fragment() {
 
     lateinit var binding: FragmentHomeBinding
     private var albumDatas = ArrayList<Album>()
+    private lateinit var albumRVAdapter: AlbumRVAdapter
 
     private val handler = Handler(Looper.getMainLooper())
     private val slideRunnable = Runnable { slideToNextPage() }
 
     override fun onCreateView(
+
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,16 +63,25 @@ class HomeFragment : Fragment() {
     // ✅ Room에 더미 Album 2개 삽입 (중복 삽입 방지)
     private fun inputDummyAlbumsOnce() {
         val prefs = requireContext().getSharedPreferences("album_prefs", Context.MODE_PRIVATE)
+        prefs.edit().putBoolean("isAlbumInserted", false).apply()
+        // ✅ 기존 데이터를 전부 삭제 (테스트용 초기화 목적)
+        val albumDB = SongDatabase.getInstance(requireContext())
+        albumDB.albumDao().deleteAll()
+
+        //prefs.edit().clear().apply()
+        //prefs.edit().remove("isSongInserted").apply() // 더미 데이터 다시 추가
+        //prefs.edit().putBoolean("isAlbumInserted", false).apply()
         if (prefs.getBoolean("isAlbumInserted", false)) return
 
-        val albumDB = SongDatabase.getInstance(requireContext())
+        //val albumDB = SongDatabase.getInstance(requireContext())
 
         albumDB.albumDao().insert(
             Album(
                 id = 1,
                 title = "LILAC",
                 singer = "아이유 (IU)",
-                coverImg = R.drawable.img_album_exp2
+                coverImg = R.drawable.img_album_exp2,
+                music = "music_lilac"
             )
         )
 
@@ -79,7 +90,8 @@ class HomeFragment : Fragment() {
                 id = 2,
                 title = "See Me gwisun",
                 singer = "Daeseong",
-                coverImg = R.drawable.see_me
+                coverImg = R.drawable.see_me,
+                music = "music_seeme"
             )
         )
 
@@ -88,7 +100,8 @@ class HomeFragment : Fragment() {
                 id = 3,
                 title = "Sign",
                 singer = "Izna",
-                coverImg = R.drawable.izna_sign
+                coverImg = R.drawable.izna_sign,
+                music = "music_sign"
             )
         )
 
@@ -97,7 +110,8 @@ class HomeFragment : Fragment() {
                 id = 4,
                 title = "Like Jennie",
                 singer = "Jennie",
-                coverImg = R.drawable.jennie_like_jennie
+                coverImg = R.drawable.jennie_like_jennie,
+                music = "music_likejennie"
             )
         )
 
@@ -106,7 +120,8 @@ class HomeFragment : Fragment() {
                 id = 5,
                 title = "Whiplash",
                 singer = "aespa (에스파)",
-                coverImg = R.drawable.aespa_whiplash
+                coverImg = R.drawable.aespa_whiplash,
+                music = "music_whiplash"
             )
         )
 
@@ -115,7 +130,8 @@ class HomeFragment : Fragment() {
                 id = 6,
                 title = "Extral",
                 singer = "Jennie",
-                coverImg = R.drawable.jennie_extral
+                coverImg = R.drawable.jennie_extral,
+                music = "music_extral"
             )
         )
 
@@ -197,6 +213,12 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         startAutoSlide()
+         // 예시: 이 함수에서 DB를 다시 읽어야 함
+        // ✅ 어댑터 갱신만으로 해결
+        //albumRVAdapter.notifyDataSetChanged()
+        if (::albumRVAdapter.isInitialized) {
+            albumRVAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun onPause() {

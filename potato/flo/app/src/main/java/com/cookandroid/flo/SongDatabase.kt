@@ -24,7 +24,7 @@ abstract class SongDatabase: RoomDatabase() {
                         SongDatabase::class.java,
                         "song-database"
                     )
-                        .fallbackToDestructiveMigration() //  이 줄 추가
+                        .fallbackToDestructiveMigration(true) //  이 줄 추가
                         .allowMainThreadQueries()
                         .build() //쓰레드랑 데이터베이스 연동
                 }

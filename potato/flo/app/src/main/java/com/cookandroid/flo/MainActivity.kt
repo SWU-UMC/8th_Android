@@ -10,6 +10,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.cookandroid.flo.databinding.ActivityMainBinding
 import com.google.gson.Gson
+import android.os.Handler
+import android.os.Looper
 
 
 class MainActivity : AppCompatActivity() {
@@ -163,6 +165,11 @@ class MainActivity : AppCompatActivity() {
          //mediaPlayer 생성 및 재생 시작
         mediaPlayer = MediaPlayer.create(this, resId) //MediaPlayer 생성
        // mediaPlayer?.start() //수정. 미니플레이어 겹침 방지
+        if (mediaPlayer == null) {
+            Log.e("MediaPlayer", "MediaPlayer 생성 실패")
+            Toast.makeText(this, "음악을 재생할 수 없습니다", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         // 공유 변수로 저장
         sharedMediaPlayer = mediaPlayer //공유 객체에 할당
@@ -178,21 +185,20 @@ class MainActivity : AppCompatActivity() {
         val songSecond = spf.getInt("songSecond", 0)
         val isPlaying = spf.getBoolean("songIsPlaying", false)
 
-        mediaPlayer?.seekTo(songSecond)
+        Handler(Looper.getMainLooper()).postDelayed({
+            mediaPlayer?.seekTo(songSecond)
 
-        if (isPlaying) {
-            mediaPlayer?.start()
-            startMiniPlayerProgress()
-            binding.mainMiniplayerBtn.visibility = View.GONE
-            binding.mainPauseBtn.visibility = View.VISIBLE
-        } else {
-            binding.mainMiniplayerBtn.visibility = View.VISIBLE
-            binding.mainPauseBtn.visibility = View.GONE
-        }
+            if (isPlaying) {
+                mediaPlayer?.start()
+                startMiniPlayerProgress()
+                binding.mainMiniplayerBtn.visibility = View.GONE
+                binding.mainPauseBtn.visibility = View.VISIBLE
+            } else {
+                binding.mainMiniplayerBtn.visibility = View.VISIBLE
+                binding.mainPauseBtn.visibility = View.GONE
+            }
 
-//        //버튼 UI 상태 초기화
-//        binding.mainMiniplayerBtn.visibility = View.GONE
-//        binding.mainPauseBtn.visibility = View.VISIBLE
+        }, 500) // 0.5초 지연 //애뮬레이터 성능의 한계 이슈발생.
 
 
         // 재생/일시정지 버튼 연결
