@@ -7,10 +7,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "AlbumTable")
 data class Album(
-    @PrimaryKey val id: Int,
-    var title: String = "",
-    var singer: String = "",
-    var coverImg: Int? = null,
+    @PrimaryKey val id: Int = 0,
+    val title: String = "",
+    val singer: String = "",
+    val coverImg: Int = 0,
     val music: String = ""
 ) {
     @Ignore

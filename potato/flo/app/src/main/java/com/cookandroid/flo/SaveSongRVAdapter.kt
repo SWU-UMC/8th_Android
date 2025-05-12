@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.cookandroid.flo.databinding.SaveItemSongBinding
 
-class SaveSongRVAdapter(private val songList: ArrayList<SaveSong>) : RecyclerView.Adapter<SaveSongRVAdapter.ViewHolder>() {
+class SaveSongRVAdapter(val songList : ArrayList<SaveSong>) : RecyclerView.Adapter<SaveSongRVAdapter.ViewHolder>() {
 
     interface MyItemClickListener {
         fun onItemClick(song: SaveSong)
@@ -95,9 +95,15 @@ class SaveSongRVAdapter(private val songList: ArrayList<SaveSong>) : RecyclerVie
     fun addSongs(songs: ArrayList<SaveSong>) {
         this.songList.clear()
         this.songList.addAll(songs.map {
-            SaveSong(it.title, it.singer, it.coverImg ?: 0, false,it.id)
+            SaveSong(
+                it.title,
+                it.singer,
+                it.coverImg,
+                false,       // isChecked 초기값 (스크롤 시 스위치 이상 방지)
+                it.isLike,   // 좋아요 상태 유지
+                it.id
+            )
         })
-
         notifyDataSetChanged()
     }
 

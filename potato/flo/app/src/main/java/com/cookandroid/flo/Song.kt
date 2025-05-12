@@ -17,7 +17,7 @@ data class Song(
     var music: String = "",
 
     //7주차 데이터 베이스 사용을 위한 코드 추가
-    var coverImg: Int? = null,
+    var coverImg: Int? =  R.drawable.img_album_exp2, //null 방지 + 기본값 지정
     var isLike: Boolean = false
 
 ){

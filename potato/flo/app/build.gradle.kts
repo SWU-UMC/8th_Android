@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.kapt")
+    id("com.google.gms.google-services") // ✅ 여기서 plugin 적용
 }
 
 android {
@@ -45,6 +46,7 @@ android {
 dependencies {
 
     implementation(libs.androidx.core.ktx)
+
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -70,4 +72,14 @@ dependencies {
     implementation("androidx.room:room-runtime:2.7.1")
     implementation("androidx.room:room-ktx:2.7.1")
     kapt("androidx.room:room-compiler:2.7.1")
+
+    // Firebase Realtime Database
+    implementation("com.google.firebase:firebase-database-ktx:20.3.0")
+
+// Firebase Storage (이미지 저장할 경우)
+    implementation("com.google.firebase:firebase-storage-ktx:20.3.0")
+
+// Firebase Core (Analytics 포함 — 필수는 아님)
+    implementation("com.google.firebase:firebase-analytics-ktx:21.5.0")
+    implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
 }

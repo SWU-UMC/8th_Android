@@ -16,7 +16,12 @@ import com.cookandroid.flo.databinding.FragmentHomeBinding
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.FirebaseDatabase
 import me.relex.circleindicator.CircleIndicator3
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 
 
 class HomeFragment : Fragment() {
@@ -36,9 +41,22 @@ class HomeFragment : Fragment() {
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        inputDummyAlbumsOnce()     // ✅ 중복 방지하여 더미 앨범 삽입
-        initAlbumRecyclerView()    // ✅ 앨범 RecyclerView 초기화
 
+        try {
+            // 👉 SharedPreferences 초기화 플래그 강제로 false 설정
+            val prefs = requireContext().getSharedPreferences("album_prefs", Context.MODE_PRIVATE)
+            prefs.edit().putBoolean("isAlbumInserted", false).apply()
+
+            // 👉 더미 앨범 삽입
+            inputDummyAlbumsOnce()
+
+        } catch (e: Exception) {
+            Log.e("HomeFragment", "inputDummyAlbumsOnce() 오류: ${e.message}")
+        }
+
+        initAlbumRecyclerView() // ✅ 앨범 RecyclerView 초기화
+
+        // 👇 아래는 그대로 두셔도 됩니다
         val bannerAdapter = BannerVPAdapter(this)
         bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp))
         bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp2))
@@ -60,123 +78,95 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    // ✅ Room에 더미 Album 2개 삽입 (중복 삽입 방지)
-    private fun inputDummyAlbumsOnce() {
-        val prefs = requireContext().getSharedPreferences("album_prefs", Context.MODE_PRIVATE)
-        prefs.edit().putBoolean("isAlbumInserted", false).apply()
-        // ✅ 기존 데이터를 전부 삭제 (테스트용 초기화 목적)
-        val albumDB = SongDatabase.getInstance(requireContext())
-        albumDB.albumDao().deleteAll()
 
-        //prefs.edit().clear().apply()
-        //prefs.edit().remove("isSongInserted").apply() // 더미 데이터 다시 추가
-        //prefs.edit().putBoolean("isAlbumInserted", false).apply()
+    private fun inputDummyAlbumsOnce() {
+        val context = binding.root.context // ✅ 안전한 context
+        val prefs = context.getSharedPreferences("album_prefs", Context.MODE_PRIVATE)
+
         if (prefs.getBoolean("isAlbumInserted", false)) return
 
-        //val albumDB = SongDatabase.getInstance(requireContext())
+        val database = FirebaseDatabase.getInstance()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "testUser"
+        val albumRef = database.getReference("users/$userId/albums")
 
-        albumDB.albumDao().insert(
-            Album(
-                id = 1,
-                title = "LILAC",
-                singer = "아이유 (IU)",
-                coverImg = R.drawable.img_album_exp2,
-                music = "music_lilac"
-            )
+        albumRef.removeValue()
+
+        val albumList = listOf(
+            Album(1, "LILAC", "아이유 (IU)", R.drawable.img_album_exp2, "music_lilac"),
+            Album(2, "See Me gwisun", "Daeseong", R.drawable.see_me, "music_seeme"),
+            Album(3, "Sign", "Izna", R.drawable.izna_sign, "music_sign"),
+            Album(4, "Like Jennie", "Jennie", R.drawable.jennie_like_jennie, "music_likejennie"),
+            Album(5, "Whiplash", "aespa (에스파)", R.drawable.aespa_whiplash, "music_whiplash"),
+            Album(6, "Extral", "Jennie", R.drawable.jennie_extral, "music_extral")
         )
 
-        albumDB.albumDao().insert(
-            Album(
-                id = 2,
-                title = "See Me gwisun",
-                singer = "Daeseong",
-                coverImg = R.drawable.see_me,
-                music = "music_seeme"
-            )
-        )
-
-        albumDB.albumDao().insert(
-            Album(
-                id = 3,
-                title = "Sign",
-                singer = "Izna",
-                coverImg = R.drawable.izna_sign,
-                music = "music_sign"
-            )
-        )
-
-        albumDB.albumDao().insert(
-            Album(
-                id = 4,
-                title = "Like Jennie",
-                singer = "Jennie",
-                coverImg = R.drawable.jennie_like_jennie,
-                music = "music_likejennie"
-            )
-        )
-
-        albumDB.albumDao().insert(
-            Album(
-                id = 5,
-                title = "Whiplash",
-                singer = "aespa (에스파)",
-                coverImg = R.drawable.aespa_whiplash,
-                music = "music_whiplash"
-            )
-        )
-
-        albumDB.albumDao().insert(
-            Album(
-                id = 6,
-                title = "Extral",
-                singer = "Jennie",
-                coverImg = R.drawable.jennie_extral,
-                music = "music_extral"
-            )
-        )
+        albumList.forEach { album ->
+            albumRef.child(album.id.toString()).setValue(album)
+        }
 
         prefs.edit().putBoolean("isAlbumInserted", true).apply()
     }
 
-    // ✅ DB에서 Album을 가져와 RecyclerView에 표시
+    // DB에서 Album을 가져와 RecyclerView에 표시
     private fun initAlbumRecyclerView() {
-        val albumDB = SongDatabase.getInstance(requireContext())
-        albumDatas = ArrayList(albumDB.albumDao().getAlbums())
+        val database = FirebaseDatabase.getInstance()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "testUser"
+        val albumRef = database.getReference("users/$userId/albums")
 
-        val albumRVAdapter = AlbumRVAdapter(albumDatas)
-        binding.homeTodayAlbumRv.adapter = albumRVAdapter
-        binding.homeTodayAlbumRv.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        albumRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val albumList = mutableListOf<Album>()
+                for (albumSnapshot in snapshot.children) {
+                    val album = albumSnapshot.getValue(Album::class.java)
+                    if (album != null) {
+                        albumList.add(album)
+                    }
+                }
 
-        albumRVAdapter.setMyItemClickListener(object : AlbumRVAdapter.MyItemClickListener {
-            override fun onItemClick(album: Album) {
-                extracted(album)
+                albumDatas = ArrayList(albumList)
+                val albumRVAdapter = AlbumRVAdapter(albumDatas)
+                binding.homeTodayAlbumRv.adapter = albumRVAdapter
+                binding.homeTodayAlbumRv.layoutManager =
+                    LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+                albumRVAdapter.setMyItemClickListener(object : AlbumRVAdapter.MyItemClickListener {
+                    override fun onItemClick(album: Album) {
+                        extracted(album)
+                    }
+
+                    override fun onRemoveAlbum(position: Int) {
+                        albumRVAdapter.removeItem(position)
+                    }
+
+                    override fun onPlayClick(album: Album) {
+                        Log.d("HomeFragment", "Play button clicked: ${album.music}")
+                        val song = SaveSong( // Song 대신 SaveSong 사용
+                            title = album.title ?: "",
+                            singer = album.singer ?: "",
+                            coverImg = album.coverImg ?: 0,
+                            isChecked = false,
+                            isLike = false,
+                            id = album.id,
+                            music = album.music,
+                            playtime = 60,
+                            isPlaying = true,
+                            second = 0
+                        )
+
+                        val sharedPreferences = requireActivity()
+                            .getSharedPreferences("song", AppCompatActivity.MODE_PRIVATE)
+                        val editor = sharedPreferences.edit()
+                        val songJson = Gson().toJson(song)
+                        editor.putString("songData", songJson)
+                        editor.apply()
+
+                        (activity as? MainActivity)?.setMiniPlayer(song)
+                    }
+                })
             }
 
-            override fun onRemoveAlbum(position: Int) {
-                albumRVAdapter.removeItem(position)
-            }
-
-            override fun onPlayClick(album: Album) {
-                Log.d("HomeFragment", "Play button clicked: ${album.music}")
-                val song = Song(
-                    title = album.title ?: "",
-                    singer = album.singer ?: "",
-                    second = 0,
-                    playtime = 60,
-                    isPlaying = true,
-                    music = album.music,
-                    albumIdx = album.id //추가
-
-                )
-                val sharedPreferences =
-                    requireActivity().getSharedPreferences("song", AppCompatActivity.MODE_PRIVATE)
-                val editor = sharedPreferences.edit()
-                val songJson = Gson().toJson(song)
-                editor.putString("songData", songJson)
-                editor.apply()
-
-                (activity as? MainActivity)?.setMiniPlayer(song)
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("Firebase", "Failed to read albums: ${error.message}")
             }
         })
     }

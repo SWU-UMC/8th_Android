@@ -25,14 +25,17 @@ class SongListFragment : Fragment() {
         binding = FragmentSongBinding.inflate(inflater, container, false)
 
         // 모든 재생 버튼 → music_lilac 재생
-        val dummySong = Song(
+        val dummySong = SaveSong(
             title = "라일락",
             singer = "아이유 (IU)",
-            second = 0,
+            coverImg = R.drawable.img_album_exp2,
+            isChecked = false,
+            isLike = false,
+            id = 1,
+            music = "music_lilac",
             playtime = 60,
             isPlaying = true,
-            music = "music_lilac",
-            albumIdx = 1
+            second = 0
         )
 
         val playAction = View.OnClickListener {
@@ -44,7 +47,6 @@ class SongListFragment : Fragment() {
 
             (activity as? MainActivity)?.setMiniPlayer(dummySong)
         }
-
         binding.songPlay01Iv.setOnClickListener(playAction)
         binding.songPlay02Iv.setOnClickListener(playAction)
         binding.songPlay03Iv.setOnClickListener(playAction)

@@ -14,7 +14,228 @@ import android.os.Handler
 import android.os.Looper
 
 
+
+//Room 데이터 구조를 다시금 확인이 필요할 수도 있어서 전체 주석 처리후 작업.
+
+
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        var sharedMediaPlayer: MediaPlayer? = null
+        var currentSong: SaveSong? = null
+    }
+
+    lateinit var binding: ActivityMainBinding
+
+    // val song: Song = Song()
+    private var song: SaveSong = SaveSong()
+    private var gson: Gson = Gson()
+
+    private var mediaPlayer: MediaPlayer? = null
+    private var miniPlayerTimer: Thread? = null
+
+    private val launcher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val albumTitle = result.data?.getStringExtra("albumTitle") ?: ""
+                val singerName = result.data?.getStringExtra("singerName") ?: ""
+                if (albumTitle.isNotEmpty() && singerName.isNotEmpty()) {
+                    Toast.makeText(this, "$albumTitle - $singerName", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_Flo)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // inputDummySongs() // RoomDB용 더미 삽입 함수
+
+        initBottomNavigation()
+
+        binding.mainPlayerCl.setOnClickListener {
+            val editor = getSharedPreferences("song", MODE_PRIVATE).edit()
+            editor.putString("songData", gson.toJson(currentSong))
+            editor.putInt("songId", currentSong?.id ?: 0)
+            editor.apply()
+
+            val intent = Intent(this, SongActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    fun openAlbumFragment(albumTitle: String, singerName: String, albumImageResId: Int) {
+        val albumFragment = AlbumFragment().apply {
+            arguments = Bundle().apply {
+                putString("albumTitle", albumTitle)
+                putString("singerName", singerName)
+                putInt("albumImageResId", albumImageResId)
+            }
+        }
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_frm, albumFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    private fun initBottomNavigation() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_frm, HomeFragment())
+            .commitAllowingStateLoss()
+
+        binding.mainBnv.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.homeFragment -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_frm, HomeFragment())
+                        .commitAllowingStateLoss()
+                    true
+                }
+                R.id.lookFragment -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_frm, LookFragment())
+                        .commitAllowingStateLoss()
+                    true
+                }
+                R.id.searchFragment -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_frm, SearchFragment())
+                        .commitAllowingStateLoss()
+                    true
+                }
+                R.id.lockerFragment -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.main_frm, LockerFragment())
+                        .commitAllowingStateLoss()
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    fun setMiniPlayer(song: SaveSong) {
+        binding.mainMiniplayerTitleTv.text = song.title
+        binding.mainMiniplayerSingerTv.text = song.singer
+        binding.mainProgressSb.progress = (song.second * 100000) / song.playtime
+
+        mediaPlayer?.release()
+        mediaPlayer = null
+
+        val resId = resources.getIdentifier(song.music, "raw", packageName)
+
+        if (resId == 0) {
+            Log.e("MediaPlayer", "음악 파일 리소스를 찾을 수 없습니다: ${song.music}")
+            Toast.makeText(this, "음악 파일이 존재하지 않습니다", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        mediaPlayer = MediaPlayer.create(this, resId)
+
+        if (mediaPlayer == null) {
+            Log.e("MediaPlayer", "MediaPlayer 생성 실패")
+            Toast.makeText(this, "음악을 재생할 수 없습니다", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        sharedMediaPlayer = mediaPlayer
+        currentSong = song
+
+        val spf = getSharedPreferences("song", MODE_PRIVATE)
+        val songSecond = spf.getInt("songSecond", 0)
+        val isPlaying = spf.getBoolean("songIsPlaying", false)
+
+        Handler(Looper.getMainLooper()).postDelayed({
+            mediaPlayer?.seekTo(songSecond)
+
+            if (isPlaying) {
+                mediaPlayer?.start()
+                startMiniPlayerProgress()
+                binding.mainMiniplayerBtn.visibility = View.GONE
+                binding.mainPauseBtn.visibility = View.VISIBLE
+            } else {
+                binding.mainMiniplayerBtn.visibility = View.VISIBLE
+                binding.mainPauseBtn.visibility = View.GONE
+            }
+        }, 500)
+
+        binding.mainMiniplayerBtn.setOnClickListener {
+            mediaPlayer?.start()
+            startMiniPlayerProgress()
+            binding.mainMiniplayerBtn.visibility = View.GONE
+            binding.mainPauseBtn.visibility = View.VISIBLE
+        }
+
+        binding.mainPauseBtn.setOnClickListener {
+            mediaPlayer?.pause()
+            binding.mainPauseBtn.visibility = View.GONE
+            binding.mainMiniplayerBtn.visibility = View.VISIBLE
+        }
+
+        mediaPlayer?.setOnCompletionListener {
+            binding.mainPauseBtn.visibility = View.GONE
+            binding.mainMiniplayerBtn.visibility = View.VISIBLE
+        }
+    }
+
+    private fun startMiniPlayerProgress() {
+        miniPlayerTimer?.interrupt()
+        miniPlayerTimer = object : Thread() {
+            override fun run() {
+                try {
+                    while (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+                        val current = mediaPlayer!!.currentPosition
+                        val total = mediaPlayer!!.duration
+                        runOnUiThread {
+                            binding.mainProgressSb.progress = (current * 100000) / total
+                        }
+                        sleep(500)
+                    }
+                } catch (e: InterruptedException) {
+                    Log.d("MiniPlayer", "타이머 쓰레드 중지됨: ${e.message}")
+                }
+            }
+        }
+        miniPlayerTimer?.start()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        val spf = getSharedPreferences("song", MODE_PRIVATE)
+        val songJson = spf.getString("songData", null)
+        val songSecond = spf.getInt("songSecond", 0)
+        val isPlaying = spf.getBoolean("songIsPlaying", false)
+
+        if (songJson != null) {
+            val loadedSong = gson.fromJson(songJson, SaveSong::class.java)
+            loadedSong.second = songSecond / 1000
+            loadedSong.isPlaying = isPlaying
+            setMiniPlayer(loadedSong)
+        } else {
+            Toast.makeText(this, "저장된 노래가 존재하지 않습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sharedMediaPlayer?.release()
+        mediaPlayer = null
+        sharedMediaPlayer = null
+        miniPlayerTimer?.interrupt()
+        miniPlayerTimer = null
+    }
+
+    // RoomDB용 더미 데이터 삽입 함수 (현재 사용 안 함)
+    /*
+    private fun inputDummySongs() { ... }
+    private fun insertDummySongs(songDB: SongDatabase) { ... }
+    */
+}
+/*class MainActivity : AppCompatActivity() {
 
     companion object {
         var sharedMediaPlayer: MediaPlayer? = null //SongActivity와 공유할 MediaPlayer
@@ -67,10 +288,28 @@ class MainActivity : AppCompatActivity() {
 //            intent.putExtra("isplaying", song.isPlaying)
 //            intent.putExtra("music",song.music) //5주차 음악 정보 추가
 //            launcher.launch(intent)
-            val editor = getSharedPreferences("song", MODE_PRIVATE).edit()
+           /* val editor = getSharedPreferences("song", MODE_PRIVATE).edit()
             editor.putInt("songId", song.id)
             editor.apply()
 
+            val intent = Intent(this, SongActivity::class.java)
+            startActivity(intent)*/
+            /*val songJson = gson.toJson(currentSong)
+            val editor = getSharedPreferences("song", MODE_PRIVATE).edit()
+            editor.putString("songData", songJson)
+            editor.putInt("songId", currentSong?.id ?: 0)
+            editor.apply()
+
+            val intent = Intent(this, SongActivity::class.java)
+            startActivity(intent)*/
+
+            //계속 이미지 전달에 오류가 있어 부득이하게 gpt 도움을 받았습니다...
+            // 🎯 songId만 저장 (JSON 저장 X)
+            val editor = getSharedPreferences("song", MODE_PRIVATE).edit()
+            editor.putInt("songId", currentSong?.id ?: 0)
+            editor.apply()
+
+            // 🎯 SongActivity에서는 DB에서 이 ID로 Song을 불러오게 하기
             val intent = Intent(this, SongActivity::class.java)
             startActivity(intent)
 
