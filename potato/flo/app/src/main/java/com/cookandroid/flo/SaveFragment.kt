@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cookandroid.flo.databinding.FragmentSaveBinding
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AlertDialog
 
 class SaveFragment : Fragment() {
 
@@ -57,6 +59,40 @@ class SaveFragment : Fragment() {
 
     }
 
+    private fun showDeleteDialog(songId: Int) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("삭제 확인")
+            .setMessage("정말 이 곡을 삭제하시겠습니까?")
+            .setPositiveButton("삭제") { _, _ ->
+                deleteSongWithUndo(songId)
+            }
+            .setNegativeButton("취소", null)
+            .show()
+    }
+
+    private fun deleteSongWithUndo(songId: Int) {
+        val index = saveSongList.indexOfFirst { it.id == songId }
+        if (index == -1) return
+
+        val deletedSong = saveSongList[index]
+        saveSongList.removeAt(index)
+        saveSongRVAdapter.notifyItemRemoved(index)
+
+        // DB에서 좋아요 해제
+        songDB.songDao().updateIsLikeById(false, songId)
+
+        // 스낵바로 되돌리기 제공
+        Snackbar.make(binding.root, "곡이 삭제되었습니다", Snackbar.LENGTH_LONG)
+            .setAction("되돌리기") {
+                saveSongList.add(index, deletedSong)
+                saveSongRVAdapter.notifyItemInserted(index)
+                // DB 복구
+                songDB.songDao().updateIsLikeById(true, songId)
+            }
+            .show()
+    }
+
+
     // RecyclerView 어댑터 연결
     private fun initRecyclerView() {
         saveSongRVAdapter = SaveSongRVAdapter(saveSongList)
@@ -73,7 +109,7 @@ class SaveFragment : Fragment() {
 
             override fun onRemoveSong(songId: Int) {
                 songDB.songDao().updateIsLikeById(false, songId)
-
+                showDeleteDialog(songId)
                 // ✅ position 기반 삭제 ❌ → 대신 id로 찾아서 삭제 ✅ -> 리스트 전체 갱신으로 뷰 홀더 포지션 값이 유효하지 않는 문제가 있어서 수정
                 val index = saveSongList.indexOfFirst { it.id == songId }
                 if (index != -1) {

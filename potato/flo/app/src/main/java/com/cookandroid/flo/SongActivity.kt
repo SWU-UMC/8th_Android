@@ -10,8 +10,11 @@ import android.view.Gravity
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.cookandroid.flo.databinding.ActivitySongBinding
 import com.google.gson.Gson
 
@@ -93,9 +96,12 @@ class SongActivity : AppCompatActivity() {
         val inflater = layoutInflater
         val view = inflater.inflate(R.layout.like_popup, null)
         val heartIv = view.findViewById<ImageView>(R.id.like_popup_heart_iv)
-
+        val textTv = view.findViewById<TextView>(R.id.like_popup_text_tv)
         // 하트 이미지 설정
         heartIv.setImageResource(if (isLiked) R.drawable.ic_my_like_on else R.drawable.ic_my_like_off)
+
+        // 텍스트 메시지 설정
+        textTv.text = if (isLiked) "좋아요를 눌렀어요" else "좋아요를 취소했어요"
 
         // 애니메이션 설정
         val anim = AnimationUtils.loadAnimation(
@@ -110,6 +116,9 @@ class SongActivity : AppCompatActivity() {
         toast.duration = Toast.LENGTH_SHORT
         toast.show()
     }
+
+
+
 
     private fun initClickListener(){
         binding.songDownIb.setOnClickListener{

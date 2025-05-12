@@ -77,9 +77,45 @@ class HomeFragment : Fragment() {
         albumDB.albumDao().insert(
             Album(
                 id = 2,
-                title = "whiplash",
+                title = "See Me gwisun",
+                singer = "Daeseong",
+                coverImg = R.drawable.see_me
+            )
+        )
+
+        albumDB.albumDao().insert(
+            Album(
+                id = 3,
+                title = "Sign",
+                singer = "Izna",
+                coverImg = R.drawable.izna_sign
+            )
+        )
+
+        albumDB.albumDao().insert(
+            Album(
+                id = 4,
+                title = "Like Jennie",
+                singer = "Jennie",
+                coverImg = R.drawable.jennie_like_jennie
+            )
+        )
+
+        albumDB.albumDao().insert(
+            Album(
+                id = 5,
+                title = "Whiplash",
                 singer = "aespa (에스파)",
                 coverImg = R.drawable.aespa_whiplash
+            )
+        )
+
+        albumDB.albumDao().insert(
+            Album(
+                id = 6,
+                title = "Extral",
+                singer = "Jennie",
+                coverImg = R.drawable.jennie_extral
             )
         )
 
