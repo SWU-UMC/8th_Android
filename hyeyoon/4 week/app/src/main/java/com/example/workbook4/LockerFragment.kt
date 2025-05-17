@@ -24,7 +24,8 @@ class LockerFragment : Fragment() {
                 tab, position ->
             tab.text = when(position) {
                 0 -> "저장한 곡"
-                else -> "음악파일"
+                1 -> "음악파일"
+                else -> ""
             }
         }.attach()
         return binding.root
