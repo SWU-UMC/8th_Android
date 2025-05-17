@@ -30,6 +30,8 @@ class HomeFragment : Fragment() {
     private var albumDatas = ArrayList<Album>()
     private lateinit var albumRVAdapter: AlbumRVAdapter
 
+    private lateinit var songDB : SongDatabase
+
     private val handler = Handler(Looper.getMainLooper())
     private val slideRunnable = Runnable { slideToNextPage() }
 
@@ -40,6 +42,10 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+
+        //데이터 리스트 생성 더미 데이터
+        songDB = SongDatabase.getInstance(requireContext())!!
+        albumDatas.addAll(songDB.albumDao().getAlbums())
 
 
         try {
@@ -79,33 +85,33 @@ class HomeFragment : Fragment() {
     }
 
 
-    private fun inputDummyAlbumsOnce() {
-        val context = binding.root.context // ✅ 안전한 context
-        val prefs = context.getSharedPreferences("album_prefs", Context.MODE_PRIVATE)
-
-        if (prefs.getBoolean("isAlbumInserted", false)) return
-
-        val database = FirebaseDatabase.getInstance()
-        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "testUser"
-        val albumRef = database.getReference("users/$userId/albums")
-
-        albumRef.removeValue()
-
-        val albumList = listOf(
-            Album(1, "LILAC", "아이유 (IU)", R.drawable.img_album_exp2, "music_lilac"),
-            Album(2, "See Me gwisun", "Daeseong", R.drawable.see_me, "music_seeme"),
-            Album(3, "Sign", "Izna", R.drawable.izna_sign, "music_sign"),
-            Album(4, "Like Jennie", "Jennie", R.drawable.jennie_like_jennie, "music_likejennie"),
-            Album(5, "Whiplash", "aespa (에스파)", R.drawable.aespa_whiplash, "music_whiplash"),
-            Album(6, "Extral", "Jennie", R.drawable.jennie_extral, "music_extral")
-        )
-
-        albumList.forEach { album ->
-            albumRef.child(album.id.toString()).setValue(album)
-        }
-
-        prefs.edit().putBoolean("isAlbumInserted", true).apply()
-    }
+//    private fun inputDummyAlbumsOnce() {
+//        val context = binding.root.context // ✅ 안전한 context
+//        val prefs = context.getSharedPreferences("album_prefs", Context.MODE_PRIVATE)
+//
+//        if (prefs.getBoolean("isAlbumInserted", false)) return
+//
+//        val database = FirebaseDatabase.getInstance()
+//        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "testUser"
+//        val albumRef = database.getReference("users/$userId/albums")
+//
+//        albumRef.removeValue()
+//
+//        val albumList = listOf(
+//            Album(1, "LILAC", "아이유 (IU)", R.drawable.img_album_exp2, "music_lilac"),
+//            Album(2, "See Me gwisun", "Daeseong", R.drawable.see_me, "music_seeme"),
+//            Album(3, "Sign", "Izna", R.drawable.izna_sign, "music_sign"),
+//            Album(4, "Like Jennie", "Jennie", R.drawable.jennie_like_jennie, "music_likejennie"),
+//            Album(5, "Whiplash", "aespa (에스파)", R.drawable.aespa_whiplash, "music_whiplash"),
+//            Album(6, "Extral", "Jennie", R.drawable.jennie_extral, "music_extral")
+//        )
+//
+//        albumList.forEach { album ->
+//            albumRef.child(album.id.toString()).setValue(album)
+//        }
+//
+//        prefs.edit().putBoolean("isAlbumInserted", true).apply()
+//    }
 
     // DB에서 Album을 가져와 RecyclerView에 표시
     private fun initAlbumRecyclerView() {

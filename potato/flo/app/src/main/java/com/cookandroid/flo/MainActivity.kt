@@ -51,7 +51,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // inputDummySongs() // RoomDB용 더미 삽입 함수
+        inputDummySongs()
+        inputDummyAlbums()
 
         initBottomNavigation()
 
@@ -94,24 +95,28 @@ class MainActivity : AppCompatActivity() {
                         .commitAllowingStateLoss()
                     true
                 }
+
                 R.id.lookFragment -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_frm, LookFragment())
                         .commitAllowingStateLoss()
                     true
                 }
+
                 R.id.searchFragment -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_frm, SearchFragment())
                         .commitAllowingStateLoss()
                     true
                 }
+
                 R.id.lockerFragment -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.main_frm, LockerFragment())
                         .commitAllowingStateLoss()
                     true
                 }
+
                 else -> false
             }
         }
@@ -234,6 +239,122 @@ class MainActivity : AppCompatActivity() {
     private fun inputDummySongs() { ... }
     private fun insertDummySongs(songDB: SongDatabase) { ... }
     */
+
+    private fun inputDummySongs() {
+        val songDB = SongDatabase.getInstance(this)!!
+        val songs = songDB.songDao().getSongs()
+
+        if (songs.isNotEmpty()) return
+        songDB.songDao().insert(
+            Song("LiLac", "IU", 0, 240, 1, false, "music_lilac", R.drawable.img_album_exp2, false)
+        )
+        songDB.songDao().insert(
+            Song(
+                "See Me gwisun",
+                "Daeseong",
+                0,
+                240,
+                2,
+                false,
+                "music_seeme",
+                R.drawable.see_me,
+                false
+            )
+        )
+        songDB.songDao().insert(
+            Song("Sign", "Izna", 0, 240, 3, false, "music_sign", R.drawable.izna_sign, false)
+        )
+        songDB.songDao().insert(
+            Song(
+                "Like Jennie",
+                "Jennie",
+                0,
+                240,
+                4,
+                false,
+                "music_likejennie",
+                R.drawable.jennie_like_jennie,
+                false
+            )
+        )
+        songDB.songDao().insert(
+            Song(
+                "Whiplash",
+                "Aespa",
+                0,
+                240,
+                5,
+                false,
+                "music_whiplash",
+                R.drawable.aespa_whiplash,
+                false
+            )
+        )
+        songDB.songDao().insert(
+            Song(
+                "Extral",
+                "Jennie",
+                0,
+                240,
+                6,
+                false,
+                "music_extral",
+                R.drawable.jennie_extral,
+                false
+            )
+        )
+
+        val _songs = songDB.songDao().getSongs()
+        Log.d("insertDummySongs", "삽입 완료: $_songs")
+    }
+
+    //ROOM_DB
+    private fun inputDummyAlbums() {
+        val songDB = SongDatabase.getInstance(this)!!
+        val albums = songDB.albumDao().getAlbums()
+
+        if (albums.isNotEmpty()) return
+
+        songDB.albumDao().insert(
+            Album(
+                0,
+                "IU 5th Album 'LILAC'", "아이유 (IU)", R.drawable.img_album_exp2
+            )
+        )
+        songDB.albumDao().insert(
+            Album(
+                1,
+                "See Me gwisun","Daeseong",R.drawable.see_me
+            )
+        )
+        songDB.albumDao().insert(
+            Album(
+                2,
+                "Sign","Izna",R.drawable.izna_sign
+            )
+        )
+        songDB.albumDao().insert(
+            Album(
+                3,
+                "Like Jennie","Jennie",R.drawable.jennie_like_jennie
+
+            )
+        )
+        songDB.albumDao().insert(
+            Album(
+                4,
+                "Whiplash","Aespa",R.drawable.aespa_whiplash
+
+            )
+        )
+        songDB.albumDao().insert(
+            Album(
+                5,
+                "Extral", "Jennie", R.drawable.jennie_extral
+            )
+        )
+
+    }
 }
 /*class MainActivity : AppCompatActivity() {
 
