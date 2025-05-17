@@ -87,7 +87,12 @@ class SongActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        timer.interrupt()
+
+        // ✅ timer가 초기화 되었는지 확인 후 interrupt 실행
+        if (::timer.isInitialized) {
+            timer.interrupt()
+        }
+
         mediaPlayer?.release()
         mediaPlayer = null
     }
@@ -186,13 +191,15 @@ class SongActivity : AppCompatActivity() {
     }
 
     private fun setPlayer(song: SaveSong) {
-        val currentPosition = 0
+        val defaultCoverImg = R.drawable.img_album_exp2
 
-        binding.songMusicTitleTv.text = song.title
-        binding.songSingerNameTv.text = song.singer
+        binding.songMusicTitleTv.text = song.title ?: "제목 없음"
+        binding.songSingerNameTv.text = song.singer ?: "아티스트 없음"
         binding.songStartTimeTv.text = "00:00"
         binding.songEndTimeTv.text = String.format("%02d:%02d", song.playtime / 60, song.playtime % 60)
-        binding.songAlbumIv.setImageResource(song.coverImg)
+
+        // 🔒 null safe 처리
+        binding.songAlbumIv.setImageResource(song.coverImg ?: defaultCoverImg)
 
         binding.songProgressbarSb.progress = 0
         startTimer()
@@ -282,16 +289,24 @@ class SongActivity : AppCompatActivity() {
         val spf = getSharedPreferences("song", MODE_PRIVATE)
         val songJson = spf.getString("songData", null)
 
-        if (songJson == null) {
+        Log.d("SongActivity", "songJson: $songJson") // ✅ 추가
+
+        if (songJson.isNullOrEmpty()) {
             Toast.makeText(this, "노래 정보를 불러올 수 없습니다", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
-        val songFromJson = gson.fromJson(songJson, SaveSong::class.java)
-        songs.add(songFromJson)
-        nowPos = 0
-        setPlayer(songFromJson)
+        try {
+            val songFromJson = gson.fromJson(songJson, SaveSong::class.java)
+            songs.add(songFromJson)
+            nowPos = 0
+            setPlayer(songFromJson)
+        } catch (e: Exception) {
+            Log.e("SongActivity", "initSong 파싱 실패: ${e.message}")
+            Toast.makeText(this, "노래 정보를 불러오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            finish()
+        }
     }
 
     // ✅ Firebase 기반 좋아요 저장/삭제 함수

@@ -30,7 +30,7 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/locker_tablayout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:tabIndicatorFullWidth="false"
         app:tabIndicatorColor="#3f3fff"

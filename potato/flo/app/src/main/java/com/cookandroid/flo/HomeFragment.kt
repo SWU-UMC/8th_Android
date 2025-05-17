@@ -85,33 +85,33 @@ class HomeFragment : Fragment() {
     }
 
 
-//    private fun inputDummyAlbumsOnce() {
-//        val context = binding.root.context // ✅ 안전한 context
-//        val prefs = context.getSharedPreferences("album_prefs", Context.MODE_PRIVATE)
-//
-//        if (prefs.getBoolean("isAlbumInserted", false)) return
-//
-//        val database = FirebaseDatabase.getInstance()
-//        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "testUser"
-//        val albumRef = database.getReference("users/$userId/albums")
-//
-//        albumRef.removeValue()
-//
-//        val albumList = listOf(
-//            Album(1, "LILAC", "아이유 (IU)", R.drawable.img_album_exp2, "music_lilac"),
-//            Album(2, "See Me gwisun", "Daeseong", R.drawable.see_me, "music_seeme"),
-//            Album(3, "Sign", "Izna", R.drawable.izna_sign, "music_sign"),
-//            Album(4, "Like Jennie", "Jennie", R.drawable.jennie_like_jennie, "music_likejennie"),
-//            Album(5, "Whiplash", "aespa (에스파)", R.drawable.aespa_whiplash, "music_whiplash"),
-//            Album(6, "Extral", "Jennie", R.drawable.jennie_extral, "music_extral")
-//        )
-//
-//        albumList.forEach { album ->
-//            albumRef.child(album.id.toString()).setValue(album)
-//        }
-//
-//        prefs.edit().putBoolean("isAlbumInserted", true).apply()
-//    }
+    private fun inputDummyAlbumsOnce() {
+        val context = binding.root.context // ✅ 안전한 context
+        val prefs = context.getSharedPreferences("album_prefs", Context.MODE_PRIVATE)
+
+        if (prefs.getBoolean("isAlbumInserted", false)) return
+
+        val database = FirebaseDatabase.getInstance()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "testUser"
+        val albumRef = database.getReference("users/$userId/albums")
+
+        albumRef.removeValue()
+
+        val albumList = listOf(
+            Album(1, "LILAC", "아이유 (IU)", R.drawable.img_album_exp2, "music_lilac"),
+            Album(2, "See Me gwisun", "Daeseong", R.drawable.see_me, "music_seeme"),
+            Album(3, "Sign", "Izna", R.drawable.izna_sign, "music_sign"),
+            Album(4, "Like Jennie", "Jennie", R.drawable.jennie_like_jennie, "music_likejennie"),
+            Album(5, "Whiplash", "aespa (에스파)", R.drawable.aespa_whiplash, "music_whiplash"),
+            Album(6, "Extral", "Jennie", R.drawable.jennie_extral, "music_extral")
+        )
+
+        albumList.forEach { album ->
+            albumRef.child(album.id.toString()).setValue(album)
+        }
+
+        prefs.edit().putBoolean("isAlbumInserted", true).apply()
+    }
 
     // DB에서 Album을 가져와 RecyclerView에 표시
     private fun initAlbumRecyclerView() {
@@ -130,23 +130,25 @@ class HomeFragment : Fragment() {
                 }
 
                 albumDatas = ArrayList(albumList)
-                val albumRVAdapter = AlbumRVAdapter(albumDatas)
+                albumRVAdapter = AlbumRVAdapter(albumDatas)
                 binding.homeTodayAlbumRv.adapter = albumRVAdapter
                 binding.homeTodayAlbumRv.layoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
                 albumRVAdapter.setMyItemClickListener(object : AlbumRVAdapter.MyItemClickListener {
                     override fun onItemClick(album: Album) {
+                        Log.d("HomeFragment", "onItemClick() 실행됨: ${album.title}")
                         extracted(album)
                     }
 
                     override fun onRemoveAlbum(position: Int) {
+                        Log.d("HomeFragment", "onRemoveAlbum() 실행됨: $position")
                         albumRVAdapter.removeItem(position)
                     }
 
                     override fun onPlayClick(album: Album) {
-                        Log.d("HomeFragment", "Play button clicked: ${album.music}")
-                        val song = SaveSong( // Song 대신 SaveSong 사용
+                        Log.d("HomeFragment", "▶️ onPlayClick() 실행됨: ${album.title}")
+                        val song = SaveSong(
                             title = album.title ?: "",
                             singer = album.singer ?: "",
                             coverImg = album.coverImg ?: 0,
@@ -159,14 +161,22 @@ class HomeFragment : Fragment() {
                             second = 0
                         )
 
-                        val sharedPreferences = requireActivity()
-                            .getSharedPreferences("song", AppCompatActivity.MODE_PRIVATE)
+                        // ✅ SharedPreferences에 저장
+                        val sharedPreferences = requireActivity().getSharedPreferences("song", AppCompatActivity.MODE_PRIVATE)
                         val editor = sharedPreferences.edit()
-                        val songJson = Gson().toJson(song)
-                        editor.putString("songData", songJson)
+                        editor.putString("songData", Gson().toJson(song))
+                        editor.putInt("songSecond", 0)
+                        editor.putBoolean("songIsPlaying", true)
                         editor.apply()
 
-                        (activity as? MainActivity)?.setMiniPlayer(song)
+                        // ✅ companion object 접근하여 currentSong 설정
+                        MainActivity.currentSong = song  // ✅ 꼭 설정 필요
+
+                        // ✅ MainActivity의 setMiniPlayer 호출 (UI 갱신)
+                        (activity as? MainActivity)?.let {
+                            it.setMiniPlayer(song)  // ✅ 실제 UI 처리
+                            Log.d("MiniPlayer", "미니플레이어 Visible 설정 완료")  // ✅ 확인용 로그
+                        }
                     }
                 })
             }

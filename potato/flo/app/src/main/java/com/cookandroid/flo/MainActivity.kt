@@ -57,10 +57,19 @@ class MainActivity : AppCompatActivity() {
         initBottomNavigation()
 
         binding.mainPlayerCl.setOnClickListener {
+            if (currentSong == null) {
+                Log.e("MainActivity", "currentSong is NULL - 저장 불가")
+                Toast.makeText(this, "노래가 재생되고 있지 않습니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val editor = getSharedPreferences("song", MODE_PRIVATE).edit()
-            editor.putString("songData", gson.toJson(currentSong))
-            editor.putInt("songId", currentSong?.id ?: 0)
+            editor.putString("songData", gson.toJson(currentSong)) // ❗ 이게 null이면 songData도 null이 됨
+            editor.putInt("songSecond", mediaPlayer?.currentPosition ?: 0)
+            editor.putBoolean("songIsPlaying", mediaPlayer?.isPlaying == true)
             editor.apply()
+
+            Log.d("MainActivity", "songData 저장 완료: ${gson.toJson(currentSong)}")
 
             val intent = Intent(this, SongActivity::class.java)
             startActivity(intent)
@@ -123,6 +132,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setMiniPlayer(song: SaveSong) {
+        Log.d("MainActivity", "🔊 setMiniPlayer() 호출됨: ${song.title}")
+        Log.d("MiniPlayer", "setMiniPlayer 실행됨 - ${song.title}")
+        binding.mainPlayerCl.visibility = View.VISIBLE  // ✅ 반드시 보여주기
+
+
         binding.mainMiniplayerTitleTv.text = song.title
         binding.mainMiniplayerSingerTv.text = song.singer
         binding.mainProgressSb.progress = (song.second * 100000) / song.playtime
@@ -216,12 +230,23 @@ class MainActivity : AppCompatActivity() {
         val isPlaying = spf.getBoolean("songIsPlaying", false)
 
         if (songJson != null) {
-            val loadedSong = gson.fromJson(songJson, SaveSong::class.java)
-            loadedSong.second = songSecond / 1000
-            loadedSong.isPlaying = isPlaying
-            setMiniPlayer(loadedSong)
+            val loadedSong = try {
+                gson.fromJson(songJson, SaveSong::class.java)
+            } catch (e: Exception) {
+                Log.e("MainActivity", "Gson 변환 실패: ${e.message}")
+                null
+            }
+
+            if (loadedSong != null) {
+                loadedSong.second = songSecond / 1000
+                loadedSong.isPlaying = isPlaying
+                setMiniPlayer(loadedSong)
+            } else {
+                Toast.makeText(this, "노래 데이터를 불러올 수 없습니다.", Toast.LENGTH_SHORT).show()
+            }
+
         } else {
-            Toast.makeText(this, "저장된 노래가 존재하지 않습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "저장된 노래가 없습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 
