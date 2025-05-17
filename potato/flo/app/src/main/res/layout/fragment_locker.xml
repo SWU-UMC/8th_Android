@@ -16,9 +16,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/locker_login_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="로그인"
+        android:textSize="15dp"
+        android:textColor="@color/song_player"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintTop_toTopOf="@id/save_box"
+        app:layout_constraintBottom_toBottomOf="@id/save_box"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/locker_tablayout"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:tabIndicatorFullWidth="false"
         app:tabIndicatorColor="#3f3fff"

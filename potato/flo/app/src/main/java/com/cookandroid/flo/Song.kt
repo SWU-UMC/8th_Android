@@ -11,12 +11,13 @@ data class Song(
     var singer : String = "",
     var second : Int = 0,
     var playtime : Int = 0,
+    val albumIdx: Int = 0 , //추가
     var isPlaying : Boolean = false,
     //어떤 음악이 재생되는지를 알려줌
     var music: String = "",
 
     //7주차 데이터 베이스 사용을 위한 코드 추가
-    var coverImg: Int? = null,
+    var coverImg: Int? =  R.drawable.img_album_exp2, //null 방지 + 기본값 지정
     var isLike: Boolean = false
 
 ){

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import com.cookandroid.flo.databinding.ItemAlbumBinding
 
+//앨범 리스트 표시
 class AlbumRVAdapter(private val albumList: ArrayList<Album>) : RecyclerView.Adapter<AlbumRVAdapter.ViewHolder>() {
 
     interface MyItemClickListener{
@@ -38,12 +39,22 @@ class AlbumRVAdapter(private val albumList: ArrayList<Album>) : RecyclerView.Ada
     }
 
     override fun onBindViewHolder(holder: AlbumRVAdapter.ViewHolder, position: Int) {
+        val album = albumList[position]  // ✅ 이 한 줄이 필수!
         //매번 리스트를 받아옴?
-        holder.bind(albumList[position])
+        //holder.bind(albumList[position])
+        holder.bind(album)
         //holder.itemView.setOnClickListener{ myItemClickListener.onItemClick(albumList[position])
         //타이틀이 클릭되었을 때,
         //holder.binding.itemAlbumTitleTv.setOnClickListener{
            // myItemClickListener.onRemoveAlbum(position)
+        holder.binding.itemAlbumPlayImgIv.setOnClickListener {
+            Log.d("AlbumRVAdapter", "Play clicked in onBindViewHolder: ${album.title}")
+            myItemClickListener.onPlayClick(album)
+        }
+
+        holder.binding.root.setOnClickListener {
+            myItemClickListener.onItemClick(album)
+        }
 
 
 

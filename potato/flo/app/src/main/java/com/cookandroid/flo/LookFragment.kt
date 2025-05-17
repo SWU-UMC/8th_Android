@@ -10,15 +10,20 @@ import com.cookandroid.flo.databinding.FragmentLookBinding
 
 class LookFragment : Fragment() {
 
-    lateinit var binding: FragmentLookBinding
+    private var _binding: FragmentLookBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLookBinding.inflate(inflater, container, false)
-
+    ): View {
+        _binding = FragmentLookBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null  //
     }
 }
