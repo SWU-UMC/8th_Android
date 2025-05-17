@@ -54,7 +54,9 @@ class SaveFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(requireContext(), "Firebase 오류 발생: ${error.message}", Toast.LENGTH_SHORT).show()
+                context?.let {
+                    Toast.makeText(it, "Firebase 오류 발생: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
             }
         })
     }
@@ -159,16 +161,41 @@ class SaveFragment : Fragment() {
     }
 
     // RecyclerView 어댑터 연결
+//    private fun initRecyclerView() {
+//        getLikedSongs { likedSongs ->
+//            saveSongRVAdapter = SaveSongRVAdapter(ArrayList(likedSongs))
+//            binding.songRv.adapter = saveSongRVAdapter
+//            binding.songRv.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+//
+//            // 클릭 이벤트 설정
+//            saveSongRVAdapter.setMyItemClickListener(object : SaveSongRVAdapter.MyItemClickListener {
+//                override fun onItemClick(song: SaveSong) {
+//                    Toast.makeText(requireContext(), "클릭한 곡: ${song.title}", Toast.LENGTH_SHORT).show()
+//                }
+//
+//                override fun onRemoveSong(songId: Int) {
+//                    unlikeSong(songId)
+//                    val index = saveSongRVAdapter.songList.indexOfFirst { it.id == songId }
+//                    if (index != -1) {
+//                        saveSongRVAdapter.removeItem(index)
+//                    }
+//                }
+//            })
+//        }
+//    }
     private fun initRecyclerView() {
         getLikedSongs { likedSongs ->
+            if (!isAdded || context == null) return@getLikedSongs  // 🔒 context 안전하게 확인
+
             saveSongRVAdapter = SaveSongRVAdapter(ArrayList(likedSongs))
             binding.songRv.adapter = saveSongRVAdapter
             binding.songRv.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-            // 클릭 이벤트 설정
             saveSongRVAdapter.setMyItemClickListener(object : SaveSongRVAdapter.MyItemClickListener {
                 override fun onItemClick(song: SaveSong) {
-                    Toast.makeText(requireContext(), "클릭한 곡: ${song.title}", Toast.LENGTH_SHORT).show()
+                    context?.let {
+                        Toast.makeText(it, "클릭한 곡: ${song.title}", Toast.LENGTH_SHORT).show()
+                    }
                 }
 
                 override fun onRemoveSong(songId: Int) {

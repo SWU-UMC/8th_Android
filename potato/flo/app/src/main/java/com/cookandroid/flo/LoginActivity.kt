@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.cookandroid.flo.databinding.ActivityLoginBinding
 
 
-
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
 
@@ -18,7 +17,7 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.loginSignUpTv.setOnClickListener { //화면 전환을 위해 추가
+        binding.loginSignUpTv.setOnClickListener {
             startActivity(Intent(this, SignUpActivity::class.java))
         }
 
@@ -42,30 +41,27 @@ class LoginActivity : AppCompatActivity() {
         val password = binding.loginPasswordEt.text.toString()
 
         val songDB = SongDatabase.getInstance(this)!!
-
-        //잘못된 유저 먼저 보여주
         val user = songDB.userDao().getUser(email, password)
 
-
-        user?.let {
+        if (user != null) {
             Log.d("LOGIN_ACT/GET_USER", "userId: ${user.id}, $user")
             saveJwt(user.id)
-
+            Toast.makeText(this, "로그인 성공!", Toast.LENGTH_SHORT).show()
             startMainActivity()
+        } else {
+            Toast.makeText(this, "회원 정보가 존재하지 않습니다.", Toast.LENGTH_SHORT).show()
         }
-
-        Toast.makeText(this, "회원 정보가 존재하지 않습니다.", Toast.LENGTH_SHORT).show()
     }
 
     private fun startMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+        finish() // 로그인 화면 종료
     }
 
     private fun saveJwt(jwt: Int) {
-        val spf = getSharedPreferences("auth" , MODE_PRIVATE)
+        val spf = getSharedPreferences("auth", MODE_PRIVATE)
         val editor = spf.edit()
-
         editor.putInt("jwt", jwt)
         editor.apply()
     }
