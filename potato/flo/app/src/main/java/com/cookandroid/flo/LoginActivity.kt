@@ -26,7 +26,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun login() {
+    private fun login() { //회원가입 때 받아온 정보를 가지고, 진행을 함.
         if (binding.loginIdEt.text.toString().isEmpty() || binding.loginDirectInputEt.text.toString().isEmpty()) {
             Toast.makeText(this, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show()
             return
@@ -40,10 +40,10 @@ class LoginActivity : AppCompatActivity() {
         val email = binding.loginIdEt.text.toString() + "@" + binding.loginDirectInputEt.text.toString()
         val password = binding.loginPasswordEt.text.toString()
 
-        val songDB = SongDatabase.getInstance(this)!!
+        val songDB = SongDatabase.getInstance(this)!! //DB 연결을 함.
         val user = songDB.userDao().getUser(email, password)
 
-        if (user != null) {
+        if (user != null) { //오류 메시지를 확인하기 위해 수정.
             Log.d("LOGIN_ACT/GET_USER", "userId: ${user.id}, $user")
             saveJwt(user.id)
             Toast.makeText(this, "로그인 성공!", Toast.LENGTH_SHORT).show()
