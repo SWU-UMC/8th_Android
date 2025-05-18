@@ -14,8 +14,9 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
-    private var song: Song = Song()
-    private var gson: Gson = Gson()
+    val songs = arrayListOf<Song>()
+    lateinit var songDB: SongDatabase
+    var nowPos = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -38,13 +39,14 @@ class MainActivity : AppCompatActivity() {
 
         binding.mainPlayerCl.setOnClickListener {
             val editor=getSharedPreferences("song",MODE_PRIVATE).edit()
-            editor.putInt("songId",song.id)
+            editor.putInt("songId",songs[nowPos].id)
             editor.apply()
 
             val intent=Intent(this, SongActivity::class.java)
             startActivity(intent)
         }
         inputDummySongs()
+        initPlayList()
         initBottomNavigation()
 
 
@@ -89,37 +91,37 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-//        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
-//        val jsonToSong = sharedPreferences.getString("songData", null)
-//        Log.d("jsonToSong", jsonToSong.toString())
-//        song = if (jsonToSong == null) { // 최초 실행 시
-//            Song("라일락", "아이유(IU)", 0, 60, false, "music_lilac")
-//        } else { // SongActivity에서 노래가 한번이라도 pause 된 경우
-//            gson.fromJson(jsonToSong, Song::class.java)
-//        }
-        val spf=getSharedPreferences("song",MODE_PRIVATE)
-        val songId =spf.getInt("songId",0)
+    override fun onResume() {
+            super.onResume()
 
-        val songDB = SongDatabase.getInstance(this)!!
+            val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
+            val songId = sharedPreferences.getInt("songId", 0)
 
-        song=if(songId==0){
-            songDB.songDao().getSong(1)
+            nowPos = getPlayingSongPosition(songId)
+            setMiniPlayer(songs[nowPos])
+    }
+    private fun getPlayingSongPosition(songId: Int): Int{
+        for (i in 0 until songs.size){
+            if (songs[i].id == songId){
+                return i
+            }
         }
-        else{
-            songDB.songDao().getSong(songId)
-        }
-
-        Log.d("Song ID",song.id.toString())
-
-        setMiniPlayer(song)
+        return 0
     }
 
-    private fun setMiniPlayer(song: Song) {
+    private fun initPlayList(){
+        songDB = SongDatabase.getInstance(this)!!
+        songs.addAll(songDB.songDao().getSongs())
+    }
+
+    private fun setMiniPlayer(song : Song) {
         binding.mainMiniplayerTitleTv.text = song.title
         binding.mainMiniplayerSingerTv.text = song.singer
-        binding.mainMiniplayerProgressSb.progress = (song.second * 1000 / song.playTime)
+        Log.d("songInfo", song.toString())
+        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
+        val second = sharedPreferences.getInt("second", 0)
+        Log.d("spfSecond", second.toString())
+        binding.mainMiniplayerProgressSb.progress = (second * 100000 / song.playTime)
     }
 
     fun updateMainPlayerCl(album : Album) {

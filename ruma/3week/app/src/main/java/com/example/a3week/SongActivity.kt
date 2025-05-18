@@ -36,7 +36,6 @@ class SongActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
 
-
         songs[nowPos].second = ((binding.songProgressSb.progress * songs[nowPos].playTime)/100)/1000
         songs[nowPos].isPlaying = false
         setPlayerStatus(false)
@@ -45,7 +44,7 @@ class SongActivity : AppCompatActivity() {
         val editor = sharedPreferences.edit() // 에디터
 
         editor.putInt("songId",songs[nowPos].id)
-
+        editor.putInt("second", songs[nowPos].second)
         editor.apply()
     }
 

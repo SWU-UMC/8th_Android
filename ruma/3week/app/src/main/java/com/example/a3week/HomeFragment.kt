@@ -32,12 +32,12 @@ class HomeFragment : Fragment(), CommunicationInterface {
 
         // 데이터 리스트 생성 더미 데이터
         albumDatas.apply {
-            add(Album("오래오래", "George", R.drawable.img_album_exp))
-            add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
-            add(Album("seasons", "wave to earth", R.drawable.img_album_exp3))
-            add(Album("모스부호", "dragon pony", R.drawable.img_album_exp4))
-            add(Album("summer", "the volunteer", R.drawable.img_album_exp5))
-            add(Album("Up!", "Balming Tiger", R.drawable.img_album_exp6))
+            add(Album(1,"오래오래", "George", R.drawable.img_album_exp))
+            add(Album(2,"Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
+            add(Album(3,"seasons", "wave to earth", R.drawable.img_album_exp3))
+            add(Album(4,"모스부호", "dragon pony", R.drawable.img_album_exp4))
+            add(Album(5,"summer", "the volunteer", R.drawable.img_album_exp5))
+            add(Album(6,"Up!", "Balming Tiger", R.drawable.img_album_exp6))
         }
 
         // List를 RecyclerView adapter와 연결하기
@@ -115,4 +115,6 @@ class HomeFragment : Fragment(), CommunicationInterface {
             activity.updateMainPlayerCl(album)
         }
     }
+
+
 }
