@@ -143,7 +143,8 @@ class MainActivity : AppCompatActivity() {
                 isPlaying = false,
                 music = "music_longlong",
                 coverImg = R.drawable.img_album_exp,
-                isLike = false
+                isLike = false,
+                1
             )
         )
         songDB.songDao().insert(
@@ -155,7 +156,8 @@ class MainActivity : AppCompatActivity() {
                 isPlaying = false,
                 music = "music_lilac",
                 coverImg = R.drawable.img_album_exp2,
-                isLike = false
+                isLike = false,
+                2
             )
         )
         songDB.songDao().insert(
@@ -167,7 +169,8 @@ class MainActivity : AppCompatActivity() {
                 isPlaying = false,
                 music = "music_seasons",
                 coverImg = R.drawable.img_album_exp3,
-                isLike = false
+                isLike = false,
+                3
             )
         )
         songDB.songDao().insert(
@@ -179,7 +182,8 @@ class MainActivity : AppCompatActivity() {
                 isPlaying = false,
                 music = "music_code",
                 coverImg = R.drawable.img_album_exp4,
-                isLike = false
+                isLike = false,
+                4
             )
         )
         songDB.songDao().insert(
@@ -191,7 +195,8 @@ class MainActivity : AppCompatActivity() {
                 isPlaying = false,
                 music = "music_summer",
                 coverImg = R.drawable.img_album_exp5,
-                isLike = false
+                isLike = false,
+                5
             )
         )
         songDB.songDao().insert(
@@ -203,7 +208,8 @@ class MainActivity : AppCompatActivity() {
                 isPlaying = false,
                 music = "music_up",
                 coverImg = R.drawable.img_album_exp6,
-                isLike = false
+                isLike = false,
+                6
             )
         )
 

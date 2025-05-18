@@ -11,6 +11,10 @@ android {
         enable = true
     }
 
+    buildFeatures {
+        dataBinding = true
+    }
+
     defaultConfig {
         applicationId = "com.example.a3week"
         minSdk = 24

@@ -112,12 +112,14 @@ class SongActivity : AppCompatActivity() {
 
     private fun moveSong(direct: Int){
         if (nowPos + direct < 0){
-            Toast.makeText(this,"first song",Toast.LENGTH_SHORT).show()
+            CustomSnackbar.make(binding.root, "처음 곡입니다.").show()
+            // Toast.makeText(this,"처음 곡입니다.",Toast.LENGTH_SHORT).show()
             return
         }
 
         if (nowPos + direct >= songs.size){
-            Toast.makeText(this,"last song",Toast.LENGTH_SHORT).show()
+            CustomSnackbar.make(binding.root, "마지막 곡입니다").show()
+            // Toast.makeText(this,"마지막 곡입니다.",Toast.LENGTH_SHORT).show()
             return
         }
 
