@@ -9,7 +9,7 @@ import com.example.a3week.databinding.FragmentLockerBinding
 import com.google.android.material.tabs.TabLayoutMediator
 
 class LockerFragment : Fragment() {
-    lateinit var binding: FragmentLockerBinding
+    private lateinit var binding: FragmentLockerBinding
     private val information = arrayListOf("저장한곡", "음악파일")
 
     override fun onCreateView(
@@ -21,9 +21,15 @@ class LockerFragment : Fragment() {
 
         val lockerAdapter = LockerVPAdapter(this)
         binding.lockerContentVp.adapter = lockerAdapter
+
         TabLayoutMediator(binding.lockerContentTb, binding.lockerContentVp) { tab, position ->
             tab.text = information[position]
         }.attach()
+        //LockerFragment의 전체 선택 버튼을 클릭했을 때, Bottom Sheet Dialog가 나타나도록 만듦
+        binding.lockerSelectAllTv.setOnClickListener {
+            val bottomSheetFragment = BottomSheetFragment()
+            bottomSheetFragment.show(parentFragmentManager, "BottomSheetDialog")
+        }
 
         return binding.root
     }

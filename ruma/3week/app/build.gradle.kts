@@ -44,6 +44,7 @@ android {
 }
 
 dependencies {
+    implementation("com.google.android.material:material:1.10.0")
     implementation ("me.relex:circleindicator:2.1.6")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
