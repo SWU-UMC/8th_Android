@@ -1,52 +1,69 @@
-package com.example.a3week
-
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.a3week.Album
 import com.example.a3week.databinding.ItemAlbumBinding
 
 class AlbumRVAdapter(private val albumList: ArrayList<Album>) :
     RecyclerView.Adapter<AlbumRVAdapter.ViewHolder>() {
 
-    inner class ViewHolder(val binding: ItemAlbumBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind(album: Album) {
-            binding.itemAlbumTitleTv.text = album.title
-            binding.itemAlbumSingerTv.text = album.singer
-            album.coverImage?.let { binding.itemAlbumCoverImgIv.setImageResource(it) }
-        }
+    private lateinit var itemClickListener: OnItemClickListener
+
+    interface OnItemClickListener {
+        fun onItemClick(album: Album)
+        fun onRemoveAlbum(position: Int)
+        fun onPlayClick(album: Album)
     }
 
-    // 아이템 뷰 객체를 만들어서 뷰홀더에 전달
+    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
+        this.itemClickListener = onItemClickListener
+    }
+
+    fun addItem(album: Album) {
+        albumList.add(album)
+        notifyDataSetChanged()
+    }
+
+    fun removeItem(position: Int) {
+        albumList.removeAt(position)
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         val binding: ItemAlbumBinding =
             ItemAlbumBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: AlbumRVAdapter.ViewHolder, position: Int) {
-        holder.bind(albumList[position])
-        holder.itemView.setOnClickListener {
-            itemClickListener.onItemClick(albumList[position])
-        }
-
-        holder.binding.itemAlbumPlayImgIv.setOnClickListener {
-            itemClickListener.onPlayAlbum(albumList[position])
-        }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val album = albumList[position]
+        holder.bind(album)
     }
 
-    interface OnItemClickListener { // 중복 정의 제거
-        fun onItemClick(album: Album)
-        fun onPlayAlbum(album: Album)
-    }
-
-    // 데이터 세트 크기를 알려주는 함수 => 리사이클러뷰가 마지막이 언제인지를 알수있음
     override fun getItemCount(): Int = albumList.size
 
-    private lateinit var itemClickListener: OnItemClickListener
+    inner class ViewHolder(private val binding: ItemAlbumBinding) :
 
-    fun setItemClickListener(onItemClickListener: OnItemClickListener) {
-        this.itemClickListener = onItemClickListener
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(album: Album) {
+            binding.itemAlbumTitleTv.text = album.title
+            binding.itemAlbumSingerTv.text = album.singer
+            album.coverImage?.let {
+                binding.itemAlbumCoverImgIv.setImageResource(it)
+            }
+
+            // 앨범 전체 클릭
+            binding.root.setOnClickListener {
+                itemClickListener.onItemClick(album)
+            }
+
+            // 재생 버튼 클릭
+            binding.itemAlbumPlayImgIv.setOnClickListener {
+                Log.d("AlbumRVAdapter", "Play clicked for ${album.title}")
+                itemClickListener.onPlayClick(album)
+            }
+        }
     }
-
 }

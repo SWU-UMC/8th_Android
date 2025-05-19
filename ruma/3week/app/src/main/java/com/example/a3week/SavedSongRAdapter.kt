@@ -16,6 +16,11 @@ class SavedSongRVAdapter() :
     fun setMyItemClickListener(itemClickListener: MyItemClickListener){
         mItemClickListener = itemClickListener
     }
+    fun updateSongs(newSongs: List<Song>) {
+        this.songs.clear()
+        this.songs.addAll(newSongs)
+        notifyDataSetChanged()
+    }
 
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): SavedSongRVAdapter.ViewHolder {

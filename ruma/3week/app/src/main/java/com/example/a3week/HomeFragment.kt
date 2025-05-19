@@ -1,5 +1,6 @@
 package com.example.a3week
 
+import AlbumRVAdapter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -7,6 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
@@ -56,11 +59,33 @@ class HomeFragment : Fragment(), CommunicationInterface {
 
                 albumRVAdapter.setItemClickListener(object : AlbumRVAdapter.OnItemClickListener {
                     override fun onItemClick(album: Album) {
-                        changeToAlbumFragment(album)
+                        Toast.makeText(context, "${album.title} 클릭됨", Toast.LENGTH_SHORT).show()
                     }
 
-                    override fun onPlayAlbum(album: Album) {
-                        sendData(album)
+                    override fun onRemoveAlbum(position: Int) {
+                        albumRVAdapter.removeItem(position)
+                    }
+
+                    override fun onPlayClick(album: Album) {
+                        // ✅ 너가 적어준 코드 삽입
+                        val song = Song(
+                            title = album.title ?: "",
+                            singer = album.singer ?: "",
+                            second = 0,
+                            playTime = 60,
+                            isPlaying = true,
+                            music = album.music,
+                            albumIdx = album.id
+                        )
+
+                        val sharedPreferences = requireActivity()
+                            .getSharedPreferences("song", AppCompatActivity.MODE_PRIVATE)
+                        val editor = sharedPreferences.edit()
+                        val songJson = Gson().toJson(song)
+                        editor.putString("songData", songJson)
+                        editor.apply()
+
+                        (activity as? MainActivity)?.setMiniPlayer(song)
                     }
                 })
             }
@@ -78,22 +103,22 @@ class HomeFragment : Fragment(), CommunicationInterface {
         if (songs.isNotEmpty()) return // 이미 데이터가 있으면 종료
 
         songDB.albumDao().insert(
-            Album(1, "FRR", "George", R.drawable.img_album_exp)
+            Album(1, "FRR", "George", R.drawable.img_album_exp,"music_longlong")
         )
         songDB.albumDao().insert(
-            Album(2, "IU 5th Album 'LILAC'","아이유 (IU)", R.drawable.img_album_exp2)
+            Album(2, "IU 5th Album 'LILAC'","아이유 (IU)", R.drawable.img_album_exp2,"music_lilac")
         )
         songDB.albumDao().insert(
-            Album(3, "seasons flows 0.02", "wave to earth", R.drawable.img_album_exp3)
+            Album(3, "seasons flows 0.02", "wave to earth", R.drawable.img_album_exp3,"music_seasons")
         )
         songDB.albumDao().insert(
-            Album(4, "POP UP", "dragon pony", R.drawable.img_album_exp4)
+            Album(4, "POP UP", "dragon pony", R.drawable.img_album_exp4,"music_code")
         )
         songDB.albumDao().insert(
-            Album(5, "The Volunteers", "the volunteers", R.drawable.img_album_exp5)
+            Album(5, "The Volunteers", "the volunteers", R.drawable.img_album_exp5,"music_summer")
         )
         songDB.albumDao().insert(
-            Album(6, "<January Never Dies>", "Balming Tiger", R.drawable.img_album_exp6)
+            Album(6, "<January Never Dies>", "Balming Tiger", R.drawable.img_album_exp6,"music_up")
         )
     }
 

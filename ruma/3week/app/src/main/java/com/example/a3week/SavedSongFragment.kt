@@ -22,16 +22,29 @@ class SavedSongFragment : Fragment() {
         binding = FragmentLockerSavedsongBinding.inflate(inflater, container, false)
 
         songDB = SongDatabase.getInstance(requireContext())!!
+        initRecyclerview()
 
         return binding.root
     }
-
     override fun onStart() {
         super.onStart()
-        initRecyclerview()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val likedSongs = songDB.songDao().getLikedSongs(true)
+        (binding.lockerSavedSongRecyclerView.adapter as? SavedSongRVAdapter)?.updateSongs(likedSongs)
+    }
+
+    fun refreshSongList() {
+        val likedSongs = songDB.songDao().getLikedSongs(true)
+        (binding.lockerSavedSongRecyclerView.adapter as? SavedSongRVAdapter)?.let {
+            it.updateSongs(likedSongs)
+        }
     }
 
     private fun initRecyclerview(){
+
         binding.lockerSavedSongRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         val songRVAdapter = SavedSongRVAdapter()

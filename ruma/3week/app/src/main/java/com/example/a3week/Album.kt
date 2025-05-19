@@ -8,5 +8,6 @@ data class Album(
     @PrimaryKey(autoGenerate = false) var id: Int=0,
     var title : String? = "",
     var singer : String? = "",
-    var coverImage : Int? = null
+    var coverImage : Int? = null,
+    val music: String
 )

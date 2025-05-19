@@ -1,5 +1,6 @@
 package com.example.a3week
 
+import android.app.Activity.RESULT_OK
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         binding.bottomSheetIv1.setOnClickListener {
             Toast.makeText(requireActivity(), "듣기 버튼 클릭", Toast.LENGTH_SHORT).show()
         }
@@ -37,7 +39,18 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         }
 
         binding.bottomSheetIv4.setOnClickListener {
-            Toast.makeText(requireActivity(), "삭제 버튼 클릭", Toast.LENGTH_SHORT).show()
-        }
+            val songDB = SongDatabase.getInstance(requireContext())
+            songDB.songDao().unlikeAll()
+            songDB.songDao().deleteUnlikedSongs()
+
+            // 저장한 곡 탭 새로고침 시도
+            val fragment = parentFragmentManager.findFragmentByTag("f0") as? SavedSongFragment
+            fragment?.let {
+                it.refreshSongList()
+            }
+
+            Toast.makeText(requireContext(), "전체 삭제 완료", Toast.LENGTH_SHORT).show()
+            dismiss()
+    }
     }
 }

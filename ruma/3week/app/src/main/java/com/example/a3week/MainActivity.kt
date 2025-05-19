@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         songs.addAll(songDB.songDao().getSongs())
     }
 
-    private fun setMiniPlayer(song : Song) {
+    fun setMiniPlayer(song : Song) {
         binding.mainMiniplayerTitleTv.text = song.title
         binding.mainMiniplayerSingerTv.text = song.singer
         Log.d("songInfo", song.toString())
