@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.mainPlayerCl.setOnClickListener {
+            if (songs.isEmpty()) return@setOnClickListener
             val editor=getSharedPreferences("song",MODE_PRIVATE).edit()
             editor.putInt("songId",songs[nowPos].id)
             editor.apply()
@@ -92,13 +93,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
-            super.onResume()
+        super.onResume()
 
-            val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
-            val songId = sharedPreferences.getInt("songId", 0)
+        if (songs.isEmpty()) return
 
-            nowPos = getPlayingSongPosition(songId)
-            setMiniPlayer(songs[nowPos])
+        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
+        val songId = sharedPreferences.getInt("songId", 0)
+
+        nowPos = getPlayingSongPosition(songId)
+        setMiniPlayer(songs[nowPos])
     }
     private fun getPlayingSongPosition(songId: Int): Int{
         for (i in 0 until songs.size){
@@ -115,6 +118,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setMiniPlayer(song : Song) {
+        if (songs.isEmpty()) return
         binding.mainMiniplayerTitleTv.text = song.title
         binding.mainMiniplayerSingerTv.text = song.singer
         Log.d("songInfo", song.toString())

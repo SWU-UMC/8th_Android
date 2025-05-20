@@ -51,6 +51,6 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
 
             Toast.makeText(requireContext(), "전체 삭제 완료", Toast.LENGTH_SHORT).show()
             dismiss()
-    }
+        }
     }
 }
