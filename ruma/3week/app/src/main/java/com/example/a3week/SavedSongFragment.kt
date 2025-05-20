@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a3week.databinding.FragmentLockerSavedsongBinding
@@ -49,15 +50,19 @@ class SavedSongFragment : Fragment() {
 
         val songRVAdapter = SavedSongRVAdapter()
 
-        songRVAdapter.setMyItemClickListener(object : SavedSongRVAdapter.MyItemClickListener{
+        songRVAdapter.setMyItemClickListener(object : SavedSongRVAdapter.MyItemClickListener {
             override fun onRemoveSong(songId: Int) {
-                songDB.songDao().updateIsLikeById(false,songId)
+                songDB.songDao().updateIsLikeById(false, songId)
+                refreshSongList()
             }
-
         })
 
         binding.lockerSavedSongRecyclerView.adapter = songRVAdapter
 
         songRVAdapter.addSongs(songDB.songDao().getLikedSongs(true) as ArrayList<Song>)
+    }
+    private fun getJwt(): Int {
+        val spf = activity?.getSharedPreferences("auth", AppCompatActivity.MODE_PRIVATE)
+        return spf?.getInt("jwt", 0) ?: 0
     }
 }
