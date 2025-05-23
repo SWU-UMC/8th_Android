@@ -8,7 +8,8 @@ class LockerVPAdapter(fragment:Fragment) : FragmentStateAdapter(fragment) {
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> SaveFragment()
-            else -> FileFragment()
+            1 -> MusicFileFragment()
+            else -> SavedAlbumFragment()
         }
     }
 }
