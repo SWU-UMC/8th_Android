@@ -36,7 +36,6 @@ class SongActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
 
-
         songs[nowPos].second = ((binding.songProgressSb.progress * songs[nowPos].playTime)/100)/1000
         songs[nowPos].isPlaying = false
         setPlayerStatus(false)
@@ -45,7 +44,7 @@ class SongActivity : AppCompatActivity() {
         val editor = sharedPreferences.edit() // 에디터
 
         editor.putInt("songId",songs[nowPos].id)
-
+        editor.putInt("second", songs[nowPos].second)
         editor.apply()
     }
 
@@ -113,12 +112,14 @@ class SongActivity : AppCompatActivity() {
 
     private fun moveSong(direct: Int){
         if (nowPos + direct < 0){
-            Toast.makeText(this,"first song",Toast.LENGTH_SHORT).show()
+            CustomSnackbar.make(binding.root, "처음 곡입니다.").show()
+            // Toast.makeText(this,"처음 곡입니다.",Toast.LENGTH_SHORT).show()
             return
         }
 
         if (nowPos + direct >= songs.size){
-            Toast.makeText(this,"last song",Toast.LENGTH_SHORT).show()
+            CustomSnackbar.make(binding.root, "마지막 곡입니다").show()
+            // Toast.makeText(this,"마지막 곡입니다.",Toast.LENGTH_SHORT).show()
             return
         }
 

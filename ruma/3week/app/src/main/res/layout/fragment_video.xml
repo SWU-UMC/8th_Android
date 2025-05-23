@@ -24,6 +24,7 @@
         android:textStyle="bold"
         android:layout_marginStart="15dp"
         app:layout_constraintTop_toBottomOf="@+id/video_iv"
-        tools:layout_editor_absoluteX="40dp" />
+        app:layout_constraintStart_toStartOf="parent"
+    />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

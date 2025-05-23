@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.a3week.databinding.FragmentAlbumBinding
 import com.google.android.material.tabs.TabLayoutMediator
@@ -12,6 +13,8 @@ import com.google.gson.Gson
 class AlbumFragment : Fragment() {
     lateinit var binding: FragmentAlbumBinding
     private var gson: Gson = Gson()
+
+    private var isLiked : Boolean = false
 
     private val information = arrayListOf("수록곡", "상세정보", "영상")
 
@@ -24,7 +27,9 @@ class AlbumFragment : Fragment() {
 
         val albumToJson = arguments?.getString("album")
         val album = gson.fromJson(albumToJson, Album::class.java)
+        isLiked = isLikedAlbum(album.id)
         setInit(album)
+        setOnClickListener(album)
 
         binding.albumBackIv.setOnClickListener {
             (context as MainActivity).supportFragmentManager.beginTransaction()
@@ -39,6 +44,49 @@ class AlbumFragment : Fragment() {
         }.attach()
 
         return binding.root
+    }
+
+    private fun getJwt() : Int {
+        val spf = requireActivity().getSharedPreferences("auth", AppCompatActivity.MODE_PRIVATE)
+        return spf.getInt("jwt", 0)
+    }
+
+    private fun likeAlbum(userId : Int, albumId : Int) {
+        val songDB = SongDatabase.getInstance(requireActivity())!!
+        val like = Like(userId, albumId)
+
+        songDB.albumDao().likeAlbum(like)
+    }
+
+    private fun isLikedAlbum(albumId : Int) : Boolean {
+        val songDB = SongDatabase.getInstance(requireActivity())!!
+        val userId = getJwt()
+
+        val likeId : Int? = songDB.albumDao().isLikedAlbum(userId, albumId)
+        return likeId != null
+    }
+
+    private fun disLikeAlbum(albumId : Int) {
+        val songDB = SongDatabase.getInstance(requireActivity())!!
+        val userId = getJwt()
+
+        songDB.albumDao().dislikedAlbum(userId, albumId)
+    }
+
+    private fun setOnClickListener(album : Album) {
+        val userId = getJwt()
+        binding.albumLikeIv.setOnClickListener {
+            if(isLiked) {
+                binding.albumLikeIv.setImageResource(R.drawable.ic_my_like_off)
+                disLikeAlbum(album.id)
+            }
+
+            else {
+                binding.albumLikeIv.setImageResource((R.drawable.ic_my_like_on))
+                likeAlbum(userId, album.id)
+            }
+        }
+
     }
 
     private fun setInit(album : Album) {

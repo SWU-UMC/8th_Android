@@ -14,8 +14,9 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
-    private var song: Song = Song()
-    private var gson: Gson = Gson()
+    val songs = arrayListOf<Song>()
+    lateinit var songDB: SongDatabase
+    var nowPos = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -37,14 +38,16 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.mainPlayerCl.setOnClickListener {
+            if (songs.isEmpty()) return@setOnClickListener
             val editor=getSharedPreferences("song",MODE_PRIVATE).edit()
-            editor.putInt("songId",song.id)
+            editor.putInt("songId",songs[nowPos].id)
             editor.apply()
 
             val intent=Intent(this, SongActivity::class.java)
             startActivity(intent)
         }
         inputDummySongs()
+        initPlayList()
         initBottomNavigation()
 
 
@@ -89,37 +92,40 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-//        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
-//        val jsonToSong = sharedPreferences.getString("songData", null)
-//        Log.d("jsonToSong", jsonToSong.toString())
-//        song = if (jsonToSong == null) { // 최초 실행 시
-//            Song("라일락", "아이유(IU)", 0, 60, false, "music_lilac")
-//        } else { // SongActivity에서 노래가 한번이라도 pause 된 경우
-//            gson.fromJson(jsonToSong, Song::class.java)
-//        }
-        val spf=getSharedPreferences("song",MODE_PRIVATE)
-        val songId =spf.getInt("songId",0)
+    override fun onResume() {
+        super.onResume()
 
-        val songDB = SongDatabase.getInstance(this)!!
+        if (songs.isEmpty()) return
 
-        song=if(songId==0){
-            songDB.songDao().getSong(1)
+        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
+        val songId = sharedPreferences.getInt("songId", 0)
+
+        nowPos = getPlayingSongPosition(songId)
+        setMiniPlayer(songs[nowPos])
+    }
+    private fun getPlayingSongPosition(songId: Int): Int{
+        for (i in 0 until songs.size){
+            if (songs[i].id == songId){
+                return i
+            }
         }
-        else{
-            songDB.songDao().getSong(songId)
-        }
-
-        Log.d("Song ID",song.id.toString())
-
-        setMiniPlayer(song)
+        return 0
     }
 
-    private fun setMiniPlayer(song: Song) {
+    private fun initPlayList(){
+        songDB = SongDatabase.getInstance(this)!!
+        songs.addAll(songDB.songDao().getSongs())
+    }
+
+    fun setMiniPlayer(song : Song) {
+        if (songs.isEmpty()) return
         binding.mainMiniplayerTitleTv.text = song.title
         binding.mainMiniplayerSingerTv.text = song.singer
-        binding.mainMiniplayerProgressSb.progress = (song.second * 1000 / song.playTime)
+        Log.d("songInfo", song.toString())
+        val sharedPreferences = getSharedPreferences("song", MODE_PRIVATE)
+        val second = sharedPreferences.getInt("second", 0)
+        Log.d("spfSecond", second.toString())
+        binding.mainMiniplayerProgressSb.progress = (second * 100000 / song.playTime)
     }
 
     fun updateMainPlayerCl(album : Album) {
@@ -141,7 +147,8 @@ class MainActivity : AppCompatActivity() {
                 isPlaying = false,
                 music = "music_longlong",
                 coverImg = R.drawable.img_album_exp,
-                isLike = false
+                isLike = false,
+                1
             )
         )
         songDB.songDao().insert(
@@ -153,7 +160,8 @@ class MainActivity : AppCompatActivity() {
                 isPlaying = false,
                 music = "music_lilac",
                 coverImg = R.drawable.img_album_exp2,
-                isLike = false
+                isLike = false,
+                2
             )
         )
         songDB.songDao().insert(
@@ -165,7 +173,8 @@ class MainActivity : AppCompatActivity() {
                 isPlaying = false,
                 music = "music_seasons",
                 coverImg = R.drawable.img_album_exp3,
-                isLike = false
+                isLike = false,
+                3
             )
         )
         songDB.songDao().insert(
@@ -177,7 +186,8 @@ class MainActivity : AppCompatActivity() {
                 isPlaying = false,
                 music = "music_code",
                 coverImg = R.drawable.img_album_exp4,
-                isLike = false
+                isLike = false,
+                4
             )
         )
         songDB.songDao().insert(
@@ -189,7 +199,8 @@ class MainActivity : AppCompatActivity() {
                 isPlaying = false,
                 music = "music_summer",
                 coverImg = R.drawable.img_album_exp5,
-                isLike = false
+                isLike = false,
+                5
             )
         )
         songDB.songDao().insert(
@@ -201,7 +212,8 @@ class MainActivity : AppCompatActivity() {
                 isPlaying = false,
                 music = "music_up",
                 coverImg = R.drawable.img_album_exp6,
-                isLike = false
+                isLike = false,
+                6
             )
         )
 

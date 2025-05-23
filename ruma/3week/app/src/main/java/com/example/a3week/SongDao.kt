@@ -8,6 +8,7 @@ import androidx.room.Update
 
 @Dao
 interface SongDao {
+    //기본 CRUD
     @Insert
     fun insert(song: Song)
 
@@ -22,11 +23,20 @@ interface SongDao {
 
     @Query("SELECT * FROM SongTable WHERE id = :id")
     fun getSong(id: Int): Song
-
-    @Query("UPDATE SongTable SET isLike= :isLike WHERE id= :id")
-    fun updateIsLikeById(isLike: Boolean, id: Int)
-
+    //좋아요 관련
     @Query("SELECT * FROM SongTable WHERE isLike = :isLike")
     fun getLikedSongs(isLike: Boolean): List<Song>
+
+    @Query("UPDATE SongTable SET isLike = :isLike WHERE id = :id")
+    fun updateIsLikeById(isLike: Boolean, id: Int)
+
+    @Query("UPDATE SongTable SET isLike = 0 WHERE isLike = 1")
+    fun unlikeAll()
+    //삭제 관련
+    @Query("DELETE FROM SongTable WHERE isLike = 0")
+    fun deleteUnlikedSongs()
+
+    @Query("DELETE FROM SongTable WHERE id = :id")
+    fun deleteById(id: Int)
 
 }

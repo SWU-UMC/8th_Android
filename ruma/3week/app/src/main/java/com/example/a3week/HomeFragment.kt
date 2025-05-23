@@ -1,11 +1,15 @@
 package com.example.a3week
 
+import AlbumRVAdapter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
@@ -22,6 +26,7 @@ class HomeFragment : Fragment(), CommunicationInterface {
     private lateinit var autoSlideExecutor: ScheduledExecutorService
     private val handler = Handler(Looper.getMainLooper())
     private var albumDatas = ArrayList<Album>()
+    private lateinit var songDB: SongDatabase
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,33 +35,94 @@ class HomeFragment : Fragment(), CommunicationInterface {
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        // 데이터 리스트 생성 더미 데이터
-        albumDatas.apply {
-            add(Album("오래오래", "George", R.drawable.img_album_exp))
-            add(Album("Lilac", "아이유 (IU)", R.drawable.img_album_exp2))
-            add(Album("seasons", "wave to earth", R.drawable.img_album_exp3))
-            add(Album("모스부호", "dragon pony", R.drawable.img_album_exp4))
-            add(Album("summer", "the volunteer", R.drawable.img_album_exp5))
-            add(Album("Up!", "Balming Tiger", R.drawable.img_album_exp6))
+        // 1. Room DB 인스턴스 가져오기
+        songDB = SongDatabase.getInstance(requireContext())!!
+
+        // 2. 별도 쓰레드에서 더미 데이터 입력 후 UI 갱신
+        Executors.newSingleThreadExecutor().execute {
+            inputDummyAlbums()
+
+            // DB에서 앨범 데이터 가져오기
+            val albumsFromDB = songDB.albumDao().getAlbums()
+
+            // 메인 스레드에서 UI 갱신
+            handler.post {
+                albumDatas.clear()
+                albumDatas.addAll(albumsFromDB)
+                Log.d("albumlist", albumDatas.toString())
+
+                // RecyclerView 어댑터 및 레이아웃 매니저 설정
+                val albumRVAdapter = AlbumRVAdapter(albumDatas)
+                binding.homeTodayMusicAlbumRv.adapter = albumRVAdapter
+                binding.homeTodayMusicAlbumRv.layoutManager =
+                    LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+
+                albumRVAdapter.setItemClickListener(object : AlbumRVAdapter.OnItemClickListener {
+                    override fun onItemClick(album: Album) {
+                        Toast.makeText(context, "${album.title} 클릭됨", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onRemoveAlbum(position: Int) {
+                        albumRVAdapter.removeItem(position)
+                    }
+
+                    override fun onPlayClick(album: Album) {
+                        // ✅ 너가 적어준 코드 삽입
+                        val song = Song(
+                            title = album.title ?: "",
+                            singer = album.singer ?: "",
+                            second = 0,
+                            playTime = 60,
+                            isPlaying = true,
+                            music = album.music,
+                            albumIdx = album.id
+                        )
+
+                        val sharedPreferences = requireActivity()
+                            .getSharedPreferences("song", AppCompatActivity.MODE_PRIVATE)
+                        val editor = sharedPreferences.edit()
+                        val songJson = Gson().toJson(song)
+                        editor.putString("songData", songJson)
+                        editor.apply()
+
+                        (activity as? MainActivity)?.setMiniPlayer(song)
+                    }
+                })
+            }
         }
 
-        // List를 RecyclerView adapter와 연결하기
-        val albumRVAdapter = AlbumRVAdapter(albumDatas)
-        binding.homeTodayMusicAlbumRv.adapter = albumRVAdapter
-        binding.homeTodayMusicAlbumRv.layoutManager =
-            LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+        // 기존 배너 ViewPager 설정 등은 여기서 그대로 처리
+        setupBannerViewPager()
+        setupPanelViewPager()
 
-        albumRVAdapter.setItemClickListener(object : AlbumRVAdapter.OnItemClickListener {
-            override fun onItemClick(album : Album) {
-                changeToAlbumFragment(album)
-            }
+        return binding.root
+    }
 
-            override fun onPlayAlbum(album: Album) {
-                sendData(album)
-            }
-        })
+    private fun inputDummyAlbums() {
+        val songs = songDB.albumDao().getAlbums()
+        if (songs.isNotEmpty()) return // 이미 데이터가 있으면 종료
 
-        // 배너 ViewPager 설정
+        songDB.albumDao().insert(
+            Album(1, "FRR", "George", R.drawable.img_album_exp,"music_longlong")
+        )
+        songDB.albumDao().insert(
+            Album(2, "IU 5th Album 'LILAC'","아이유 (IU)", R.drawable.img_album_exp2,"music_lilac")
+        )
+        songDB.albumDao().insert(
+            Album(3, "seasons flows 0.02", "wave to earth", R.drawable.img_album_exp3,"music_seasons")
+        )
+        songDB.albumDao().insert(
+            Album(4, "POP UP", "dragon pony", R.drawable.img_album_exp4,"music_code")
+        )
+        songDB.albumDao().insert(
+            Album(5, "The Volunteers", "the volunteers", R.drawable.img_album_exp5,"music_summer")
+        )
+        songDB.albumDao().insert(
+            Album(6, "<January Never Dies>", "Balming Tiger", R.drawable.img_album_exp6,"music_up")
+        )
+    }
+
+    private fun setupBannerViewPager() {
         val bannerAdapter = BannerVPAdapter(this)
         bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp))
         bannerAdapter.addFragment(BannerFragment(R.drawable.img_home_viewpager_exp2))
@@ -64,18 +130,16 @@ class HomeFragment : Fragment(), CommunicationInterface {
         binding.homeBannerVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         binding.homeBannerIndicator.setViewPager(binding.homeBannerVp)
 
-        // 자동 슬라이드 시작
         startAutoSlide(bannerAdapter)
+    }
 
-        // 패널 배경 ViewPager 설정
-        val pannelAdpater = PannelVpAdapter(this)
-        pannelAdpater.addFragment(PannelFragment(R.drawable.img_first_album_default))
-        pannelAdpater.addFragment(PannelFragment(R.drawable.img_first_album_default))
-        binding.homePannelBackgroundVp.adapter = pannelAdpater
+    private fun setupPanelViewPager() {
+        val pannelAdapter = PannelVpAdapter(this)
+        pannelAdapter.addFragment(PannelFragment(R.drawable.img_first_album_default))
+        pannelAdapter.addFragment(PannelFragment(R.drawable.img_first_album_default))
+        binding.homePannelBackgroundVp.adapter = pannelAdapter
         binding.homePannelBackgroundVp.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         binding.homePannelIndicator.setViewPager(binding.homePannelBackgroundVp)
-
-        return binding.root
     }
 
     private fun startAutoSlide(adapter: BannerVPAdapter) {
@@ -86,7 +150,7 @@ class HomeFragment : Fragment(), CommunicationInterface {
                 if (nextItem < adapter.itemCount) {
                     binding.homeBannerVp.currentItem = nextItem
                 } else {
-                    binding.homeBannerVp.currentItem = 0 // 순환
+                    binding.homeBannerVp.currentItem = 0
                 }
             }
         }, 3000, 3000, TimeUnit.MILLISECONDS)
