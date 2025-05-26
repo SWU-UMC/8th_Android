@@ -74,7 +74,15 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, SongActivity::class.java)
             startActivity(intent)
         }
+        Log.d("MAIN/JWT_TO_SERVER",getJwt().toString())
     }
+
+    private fun getJwt(): Int{
+        val spf = this.getSharedPreferences("auth", AppCompatActivity.MODE_PRIVATE)
+
+        return spf!!.getInt("jwt",0)
+    }
+
 
     fun openAlbumFragment(albumTitle: String, singerName: String, albumImageResId: Int) {
         val albumFragment = AlbumFragment().apply {
