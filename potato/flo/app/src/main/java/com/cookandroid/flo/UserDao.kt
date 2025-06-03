@@ -2,6 +2,7 @@ package com.cookandroid.flo
 
 
 import androidx.room.*
+import com.cookandroid.flo.data.entities.User
 
 
 @Dao

@@ -4,6 +4,7 @@ package com.cookandroid.flo
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.cookandroid.flo.data.entities.Song
 import com.cookandroid.flo.databinding.ItemAlbumBinding
 
 //과제 요구 범위를 범음! 잠시 중단.

@@ -1,5 +1,6 @@
-package com.cookandroid.flo.Api
+package com.cookandroid.flo.data.remote
 
+import com.cookandroid.flo.Api.User
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST

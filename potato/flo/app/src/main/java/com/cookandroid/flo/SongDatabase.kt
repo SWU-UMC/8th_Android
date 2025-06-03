@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.cookandroid.flo.data.entities.Like
+import com.cookandroid.flo.data.entities.Song
+import com.cookandroid.flo.data.entities.User
 
 //@Database(entities = [Song::class, Album::class], version = 2)
 //abstract class SongDatabase: RoomDatabase() {

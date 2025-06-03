@@ -1,6 +1,9 @@
-package com.cookandroid.flo.Api
+package com.cookandroid.flo.data.remote
 
 import android.util.Log
+import com.cookandroid.flo.Api.LoginView
+import com.cookandroid.flo.Api.User
+import com.cookandroid.flo.Api.getRetrofit
 import com.cookandroid.flo.SignUpView
 import retrofit2.Call
 import retrofit2.Callback

@@ -1,4 +1,4 @@
-package com.cookandroid.flo
+package com.cookandroid.flo.data.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
