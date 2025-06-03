@@ -12,9 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FLO"
         android:enableOnBackInvokedCallback="true">
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".ui.main.MainActivity"/>
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:exported="true"
             android:theme="@style/splashTheme">
             <intent-filter>
@@ -23,9 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.a3week.SongActivity"/>
-        <activity android:name="com.example.a3week.LoginActivity"/>
-        <activity android:name="com.example.a3week.SignUpActivity"/>
+        <activity android:name="com.example.a3week.ui.song.SongActivity"/>
+        <activity android:name="com.example.a3week.ui.signin.LoginActivity"/>
+        <activity android:name="com.example.a3week.ui.signup.SignUpActivity"/>
     </application>
 
 </manifest>
