@@ -3,17 +3,12 @@ package com.cookandroid.flo
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.cookandroid.flo.Api.AuthService
+import com.cookandroid.flo.data.remote.AuthService
 import com.cookandroid.flo.databinding.ActivitySignupBinding
 
 import com.cookandroid.flo.Api.User
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
 
 class SignUpActivity : AppCompatActivity() , SignUpView{
 

@@ -1,4 +1,4 @@
-package com.cookandroid.flo.Api
+package com.cookandroid.flo.data.remote
 
 import com.google.gson.annotations.SerializedName
 

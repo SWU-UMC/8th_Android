@@ -3,6 +3,7 @@ package com.cookandroid.flo
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import com.cookandroid.flo.data.entities.Like
 
 @Dao
 interface AlbumDao {
